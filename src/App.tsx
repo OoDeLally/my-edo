@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import classNames from 'classnames';
 import './App.css';
 
 
@@ -6,12 +7,11 @@ import './App.css';
 
 const INTERVAL_FACTOR = Math.pow(2, 1 / 12);
 
+const audioContext = new window.AudioContext();
+
 
 const NoteKey: React.FC<NoteKeyProps> = ({ baseFrequency, ton }) => {
-  const audioContext = useMemo(
-    () => new window.AudioContext(),
-    [],
-  );
+  const [isPlaying, setIsPlaying] = useState(false);
   const gainNode = useMemo(
     () => {
       const node = audioContext.createGain();
@@ -19,7 +19,7 @@ const NoteKey: React.FC<NoteKeyProps> = ({ baseFrequency, ton }) => {
       node.gain.setTargetAtTime(0, audioContext.currentTime, 0);
       return node;
     },
-    [audioContext],
+    [],
   );
   useEffect(
     () => {
@@ -28,19 +28,21 @@ const NoteKey: React.FC<NoteKeyProps> = ({ baseFrequency, ton }) => {
       node.connect(gainNode);
       node.start();
     },
-    [audioContext, baseFrequency, ton, gainNode],
+    [ baseFrequency, ton, gainNode],
   );
   const start = useCallback(() => {
     audioContext.resume();
     gainNode.gain.setTargetAtTime(1, audioContext.currentTime, 0.05);
-  }, [gainNode, audioContext]);
+    setIsPlaying(true);
+  }, [gainNode, setIsPlaying]);
   const stop = useCallback(() => {
     gainNode.gain.setTargetAtTime(0, audioContext.currentTime, 0.05);
-  }, [gainNode, audioContext]);
+    setIsPlaying(false);
+  }, [gainNode, setIsPlaying]);
 
   return (
     <button
-      className="play"
+      className={classNames('note-key', isPlaying && 'playing')}
       onMouseDown={start}
       onMouseOut={stop}
       onMouseUp={stop}
