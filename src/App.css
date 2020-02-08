@@ -1,10 +1,26 @@
 button.note-key {
-  width: 3rem;
+  width: 2rem;
   height: 5rem;
-  padding: 1rem;
   text-align: center;
 }
 
-button.note-key.playing {
+.black-row {
+  padding: 0 1rem;
+}
+
+.black-row button.note-key {
+  background: black;
+  color: white;
+}
+
+.black-row button.note-key.playing {
+  box-shadow: 0em 0em 1em lightgrey inset;
+}
+
+.white-row button.note-key {
+  background: white;
+}
+
+.white-row button.note-key.playing {
   box-shadow: 0em 0em 1em grey inset;
 }
