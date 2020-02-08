@@ -3,14 +3,36 @@ import classNames from 'classnames';
 import './App.css';
 
 
+const OCTAVE_DIVISIONS = 12;
+const BASE_FREQUENCY = 16.35;
+const BASE_NOTE = 'C';
+
+const INTERVAL_FACTOR = Math.pow(2, 1 / OCTAVE_DIVISIONS);
 
 
-const INTERVAL_FACTOR = Math.pow(2, 1 / 12);
+const getNoteName = (intervalNum: number) => {
+  const octaveNum = Math.floor(intervalNum / OCTAVE_DIVISIONS);
+  const note = String.fromCharCode(BASE_NOTE.charCodeAt(0) + (intervalNum % OCTAVE_DIVISIONS));
+  return `${note}${octaveNum}`;
+};
+
+const getIntervalNum = (note: string) => {
+  const octaveNum = +note[1];
+  const letter = note[0];
+  const rest = letter.charCodeAt(0) - BASE_NOTE.charCodeAt(0);
+  return OCTAVE_DIVISIONS * octaveNum + rest;
+};
+
+const getFrequency = (note: string) => {
+  return BASE_FREQUENCY * Math.pow(INTERVAL_FACTOR, getIntervalNum(note));
+}
+
+
 
 const audioContext = new window.AudioContext();
 
 
-const NoteKey: React.FC<NoteKeyProps> = ({ baseFrequency, ton }) => {
+const NoteKey: React.FC<NoteKeyProps> = ({ note }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const gainNode = useMemo(
     () => {
@@ -24,11 +46,11 @@ const NoteKey: React.FC<NoteKeyProps> = ({ baseFrequency, ton }) => {
   useEffect(
     () => {
       const osc = audioContext.createOscillator();
-      osc.frequency.value = baseFrequency * Math.pow(INTERVAL_FACTOR, ton);
+      osc.frequency.value = getFrequency(note);
       osc.connect(gainNode);
       osc.start();
     },
-    [ baseFrequency, ton, gainNode],
+    [note, gainNode],
   );
   const start = useCallback(() => {
     audioContext.resume();
@@ -39,7 +61,6 @@ const NoteKey: React.FC<NoteKeyProps> = ({ baseFrequency, ton }) => {
     gainNode.gain.setTargetAtTime(0, audioContext.currentTime, 0.05);
     setIsPlaying(false);
   }, [gainNode, setIsPlaying]);
-
   return (
     <button
       className={classNames('note-key', isPlaying && 'playing')}
@@ -47,30 +68,38 @@ const NoteKey: React.FC<NoteKeyProps> = ({ baseFrequency, ton }) => {
       onMouseOut={stop}
       onMouseUp={stop}
     >
-      {ton}
+      {note}
     </button>
   );
 }
 
 interface NoteKeyProps {
-  baseFrequency: number;
-  ton: number;
+  note: string;
 }
 
 
 
 export default () => {
-
-  const baseFreq = 440;
-  const octaveCount = 3;
+  const intervalCountOffset = OCTAVE_DIVISIONS * 2; // 3 octaves;
+  const octaveCount = 5;
 
   const whiteNotes = [];
-  for (let t = 0; t < 12 * octaveCount + 1; t += 2) {
-    whiteNotes.push(<NoteKey key={t} baseFrequency={baseFreq} ton={t} />);
+  {
+    const end = intervalCountOffset + OCTAVE_DIVISIONS * octaveCount + 1;
+    for (let d = intervalCountOffset; d < end; d += 2) {
+      whiteNotes.push(
+        <NoteKey key={d} note={getNoteName(d)} />
+      );
+    }
   }
   const blackNotes = [];
-  for (let t = 1; t < 12 * octaveCount; t += 2) {
-    blackNotes.push(<NoteKey key={t} baseFrequency={baseFreq} ton={t} />);
+  {
+    const end = intervalCountOffset + OCTAVE_DIVISIONS * octaveCount;
+    for (let d = intervalCountOffset + 1; d < end; d += 2) {
+      blackNotes.push(
+        <NoteKey key={d} note={getNoteName(d)} />
+      );
+    }
   }
 
   return (
