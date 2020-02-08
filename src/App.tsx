@@ -1,30 +1,41 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import './App.css';
 
 
-const AudioContext = window.AudioContext;
 
 
 const INTERVAL_FACTOR = Math.pow(2, 1 / 12);
 
 
 const NoteKey: React.FC<NoteKeyProps> = ({ baseFrequency, ton }) => {
-  const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
-  const [gainNode, setGainNode] = useState<GainNode | null>(null);
+  const audioContext = useMemo(
+    () => new window.AudioContext(),
+    [],
+  );
+  const gainNode = useMemo(
+    () => {
+      const node = audioContext.createGain();
+      node.connect(audioContext.destination);
+      node.gain.setTargetAtTime(0, audioContext.currentTime, 0);
+      return node;
+    },
+    [audioContext],
+  );
+  useEffect(
+    () => {
+      const node = audioContext.createOscillator();
+      node.frequency.value = baseFrequency * Math.pow(INTERVAL_FACTOR, ton);
+      node.connect(gainNode);
+      node.start();
+    },
+    [audioContext, baseFrequency, ton, gainNode],
+  );
   const start = useCallback(() => {
-    const ac = new window.AudioContext();
-    const gainNode = ac.createGain();
-    const oscillatorNode = ac.createOscillator();
-    gainNode.connect(ac.destination)
-    oscillatorNode.connect(gainNode);
-    oscillatorNode.frequency.value = baseFrequency * Math.pow(INTERVAL_FACTOR, ton);
-    setAudioContext(ac);
-    setGainNode(gainNode);
-    oscillatorNode.start();
-  }, [baseFrequency, ton, setGainNode]);
+    audioContext.resume();
+    gainNode.gain.setTargetAtTime(1, audioContext.currentTime, 0.05);
+  }, [gainNode, audioContext]);
   const stop = useCallback(() => {
-    const delayInSec = 0.015;
-    audioContext && gainNode!.gain.setTargetAtTime(0, audioContext.currentTime, delayInSec);
+    gainNode.gain.setTargetAtTime(0, audioContext.currentTime, 0.05);
   }, [gainNode, audioContext]);
 
   return (
