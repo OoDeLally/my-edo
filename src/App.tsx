@@ -5,22 +5,40 @@ import './App.css';
 
 const OCTAVE_DIVISIONS = 12;
 const BASE_FREQUENCY = 16.35;
-const BASE_NOTE = 'C';
+const NOTE_NAMES = [
+  'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'
+];
+
+if (NOTE_NAMES.length !== OCTAVE_DIVISIONS) {
+  throw new Error(`There are ${OCTAVE_DIVISIONS} divisions but only ${NOTE_NAMES.length} names.`);
+}
 
 const INTERVAL_FACTOR = Math.pow(2, 1 / OCTAVE_DIVISIONS);
 
 
 const getNoteName = (intervalNum: number) => {
   const octaveNum = Math.floor(intervalNum / OCTAVE_DIVISIONS);
-  const note = String.fromCharCode(BASE_NOTE.charCodeAt(0) + (intervalNum % OCTAVE_DIVISIONS));
+  const note = NOTE_NAMES[intervalNum % OCTAVE_DIVISIONS];
   return `${note}${octaveNum}`;
 };
 
+const parseNote = (note: string) => {
+  const match = note.match(/^([A-Z#]+)([0-9]+)$/);
+  if (!match) {
+    throw new Error(`Could not parse note ${note}`);
+  }
+  const [, noteName, octaveNum] = match;
+  const noteIndex = NOTE_NAMES.findIndex(v => v === noteName);
+  if (noteIndex === -1) {
+    throw new Error(`Could not find note name ${note}`);
+  }
+  return [noteName, +octaveNum, noteIndex] as const;
+};
+
+
 const getIntervalNum = (note: string) => {
-  const octaveNum = +note[1];
-  const letter = note[0];
-  const rest = letter.charCodeAt(0) - BASE_NOTE.charCodeAt(0);
-  return OCTAVE_DIVISIONS * octaveNum + rest;
+  const [, octaveNum, noteIndex] = parseNote(note);
+  return OCTAVE_DIVISIONS * octaveNum + noteIndex;
 };
 
 const getFrequency = (note: string) => {
@@ -54,13 +72,18 @@ const NoteKey: React.FC<NoteKeyProps> = ({ note }) => {
   );
   const start = useCallback(() => {
     audioContext.resume();
-    gainNode.gain.setTargetAtTime(0.2, audioContext.currentTime, 0.05);
+    gainNode.gain.setTargetAtTime(0.3, audioContext.currentTime, 0.05);
     setIsPlaying(true);
   }, [gainNode, setIsPlaying]);
   const stop = useCallback(() => {
     gainNode.gain.setTargetAtTime(0, audioContext.currentTime, 0.05);
     setIsPlaying(false);
   }, [gainNode, setIsPlaying]);
+
+  const noteLetter = useMemo(
+    () => parseNote(note)[0],
+    [note],
+  );
   return (
     <button
       className={classNames('note-key', isPlaying && 'playing')}
@@ -68,7 +91,7 @@ const NoteKey: React.FC<NoteKeyProps> = ({ note }) => {
       onMouseOut={stop}
       onMouseUp={stop}
     >
-      {note}
+      {noteLetter}
     </button>
   );
 }
@@ -80,7 +103,7 @@ interface NoteKeyProps {
 
 
 export default () => {
-  const intervalCountOffset = OCTAVE_DIVISIONS * 2; // 3 octaves;
+  const intervalCountOffset = OCTAVE_DIVISIONS * 3; // 3 octaves;
   const octaveCount = 5;
 
   const whiteNotes = [];
