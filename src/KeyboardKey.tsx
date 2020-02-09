@@ -7,7 +7,7 @@ const audioContext = new window.AudioContext();
 
 
 
-export const KeyboardKey = ({ note }: NoteKeyProps) => {
+export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
   const { getFrequency, parseNote } = useEdoContext();
   const [isPlaying, setIsPlaying] = useState(false);
   const gainNode = useMemo(
@@ -44,7 +44,7 @@ export const KeyboardKey = ({ note }: NoteKeyProps) => {
   );
   return (
     <button
-      className={classNames('note-key', isPlaying && 'playing')}
+      className={classNames('note-key', keyStyleClass, isPlaying && 'playing')}
       onMouseDown={start}
       onMouseOut={stop}
       onMouseUp={stop}
@@ -56,6 +56,7 @@ export const KeyboardKey = ({ note }: NoteKeyProps) => {
 
 interface NoteKeyProps {
   note: string;
+  keyStyleClass?: string;
 }
 
 

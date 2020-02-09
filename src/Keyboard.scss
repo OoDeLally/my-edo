@@ -1,34 +1,40 @@
 .keyboard {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  align-content: space-around;
 
+  .row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: space-around;
 
-  button.note-key {
-    width: 2rem;
-    height: 5rem;
-    text-align: center;
-  }
+    button.note-key, .key-separator {
+      width: 2rem;
+      height: 5rem;
+      text-align: center;
+    }
 
-  .black-row {
-    padding: 0 1rem;
-
-    button.note-key {
+    button.note-key.white {
+      background: white;
+      color: black;
+      &.playing {
+        box-shadow: 0em 0em 1em lightgrey inset;
+      }
+    }
+    button.note-key.black {
       background: black;
       color: white;
-    }
-    button.note-key.playing {
-      box-shadow: 0em 0em 1em lightgrey inset;
+      &.playing {
+        box-shadow: 0em 0em 1em grey inset;
+      }
     }
   }
 
-
-  .white-row {
-    button.note-key {
-      background: white;
-    }
-    button.note-key.playing {
-      box-shadow: 0em 0em 1em grey inset;
-    }
-  }
 
 }
-
-

@@ -9,20 +9,22 @@ export const Keyboard = ({ startOctave, rangeInOctaves }: KeyboardProps) => {
   const { degreeCount } = useEdoContext();
 
 
-  const [rows, setRow] = useState<Array<KeyboardKeyRowProps & { name: string}>>([
-    {
-      name: 'white',
-      startOctave: startOctave,
-      startDegree: 0,
-      rangeInDegree: rangeInOctaves * degreeCount,
-      stepSizeInDegree: 2,
-    },
+  const [rows, ] = useState<Array<KeyboardKeyRowProps & { name: string }>>([
     {
       name: 'black',
       startOctave: startOctave,
       startDegree: 1,
       rangeInDegree: rangeInOctaves * degreeCount,
-      stepSizeInDegree: 2,
+      degrees: ['C#', 'D#', 'F#', 'G#', 'A#'],
+      keyStyleClass: 'black',
+    },
+    {
+      name: 'white',
+      startOctave: startOctave,
+      startDegree: 0,
+      rangeInDegree: rangeInOctaves * degreeCount + 1,
+      degrees: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
+      keyStyleClass: 'white',
     },
   ]);
 
