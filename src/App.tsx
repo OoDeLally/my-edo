@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
-import './App.css';
+import './App.scss';
 
 const CENTS_IN_OCTAVE = 1200;
 const FREQUENCY_OFFSET = 16.35; // C0
