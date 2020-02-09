@@ -18,7 +18,18 @@
 
 
 .keyboard-settings-panel {
+
+  padding: 1rem;
+
   label {
     display: block;
   }
+
+  .note-editor {
+    padding: 0.5rem;
+    width: 100%;
+  }
+
+
 }
+

@@ -2,13 +2,20 @@ import React, { useRef, useEffect, useCallback } from 'react';
 
 
 export const NumberInput = ({ initialValue, onBlur, onChange, min, max }: NumberInputProps) => {
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
   useEffect(
     () => {
-      const input = inputRef.current;
-      if (input) {
-        input.value = String(initialValue);
-      }
+      inputRef.current!.addEventListener('keypress', (e) => {
+        e.preventDefault();
+      });
+    },
+    [inputRef],
+  );
+
+  useEffect(
+    () => {
+      inputRef.current!.value = String(initialValue);
     },
     [initialValue, inputRef],
   );

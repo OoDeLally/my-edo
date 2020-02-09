@@ -56,7 +56,7 @@ export const EdoContextProvider = ({ children }: EdoContextProviderProps) => {
 
   const parseNote = useCallback(
     (note: string) => {
-      const match = note.match(/^([A-Z#]+)([0-9]+)$/);
+      const match = note.match(/^([^0-9 ]+)([0-9]+)$/);
       if (!match) {
         throw new Error(`Could not parse note ${note}`);
       }
