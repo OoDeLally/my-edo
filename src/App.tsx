@@ -9,10 +9,12 @@ export default () => {
   return (
     <EdoContextProvider>
       <div className="App">
-        <Keyboard
-          startOctave={3}
-          rangeInOctaves={3}
-        />
+        <div className="keyboard-container">
+          <Keyboard
+            startOctave={3}
+            rangeInOctaves={3}
+          />
+        </div>
       </div>
     </EdoContextProvider>
   );

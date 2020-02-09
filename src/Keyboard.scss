@@ -1,27 +1,34 @@
-button.note-key {
-  width: 2rem;
-  height: 5rem;
-  text-align: center;
-}
+.keyboard {
 
-.black-row {
-  padding: 0 1rem;
 
   button.note-key {
-    background: black;
-    color: white;
+    width: 2rem;
+    height: 5rem;
+    text-align: center;
   }
-  button.note-key.playing {
-    box-shadow: 0em 0em 1em lightgrey inset;
+
+  .black-row {
+    padding: 0 1rem;
+
+    button.note-key {
+      background: black;
+      color: white;
+    }
+    button.note-key.playing {
+      box-shadow: 0em 0em 1em lightgrey inset;
+    }
   }
+
+
+  .white-row {
+    button.note-key {
+      background: white;
+    }
+    button.note-key.playing {
+      box-shadow: 0em 0em 1em grey inset;
+    }
+  }
+
 }
 
 
-.white-row {
-  button.note-key {
-    background: white;
-  }
-  button.note-key.playing {
-    box-shadow: 0em 0em 1em grey inset;
-  }
-}

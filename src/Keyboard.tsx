@@ -12,14 +12,14 @@ export const Keyboard = ({ startOctave, rangeInOctaves }: KeyboardProps) => {
   const [rows, setRow] = useState<Array<KeyboardKeyRowProps & { name: string}>>([
     {
       name: 'white',
-      startOctave: 3,
+      startOctave: startOctave,
       startDegree: 0,
       rangeInDegree: rangeInOctaves * degreeCount,
       stepSizeInDegree: 2,
     },
     {
       name: 'black',
-      startOctave: 3,
+      startOctave: startOctave,
       startDegree: 1,
       rangeInDegree: rangeInOctaves * degreeCount,
       stepSizeInDegree: 2,
