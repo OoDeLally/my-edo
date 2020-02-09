@@ -2,25 +2,30 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import './App.css';
 
-
-const OCTAVE_DIVISIONS = 12;
-const BASE_FREQUENCY = 16.35;
+const CENTS_IN_OCTAVE = 1200;
+const DEGREE_SIZE_IN_CENTS = 100;
+const DEGREE_COUNT = CENTS_IN_OCTAVE / DEGREE_SIZE_IN_CENTS;
+const FREQUENCY_OFFSET = 16.35; // C0
 const NOTE_NAMES = [
   'C', 'K', 'D', 'L', 'E', 'F', 'M', 'G', 'P', 'A', 'H', 'B',
-  // 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B',
+  //
+  // 'C', '', 'D', '', 'E', 'F', '', 'G', '', 'A', '', 'B',
+  // Alphabetic:
   // 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+  // Western:
+  // 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B',
 ];
 
-if (NOTE_NAMES.length !== OCTAVE_DIVISIONS) {
-  throw new Error(`There are ${OCTAVE_DIVISIONS} divisions but only ${NOTE_NAMES.length} names.`);
+if (NOTE_NAMES.length !== DEGREE_COUNT) {
+  throw new Error(`There are ${DEGREE_COUNT} divisions but only ${NOTE_NAMES.length} names.`);
 }
 
-const INTERVAL_FACTOR = Math.pow(2, 1 / OCTAVE_DIVISIONS);
+const INTERCENT_FACTOR = Math.pow(2, 1 / CENTS_IN_OCTAVE);
 
 
-const getNoteName = (intervalNum: number) => {
-  const octaveNum = Math.floor(intervalNum / OCTAVE_DIVISIONS);
-  const note = NOTE_NAMES[intervalNum % OCTAVE_DIVISIONS];
+const getNoteName = (cents: number) => {
+  const octaveNum = Math.floor(cents / CENTS_IN_OCTAVE);
+  const note = NOTE_NAMES[(cents % CENTS_IN_OCTAVE) / DEGREE_SIZE_IN_CENTS];
   return `${note}${octaveNum}`;
 };
 
@@ -30,21 +35,21 @@ const parseNote = (note: string) => {
     throw new Error(`Could not parse note ${note}`);
   }
   const [, noteName, octaveNum] = match;
-  const noteIndex = NOTE_NAMES.findIndex(v => v === noteName);
-  if (noteIndex === -1) {
+  const noteDegree = NOTE_NAMES.findIndex(v => v === noteName);
+  if (noteDegree === -1) {
     throw new Error(`Could not find note name ${note}`);
   }
-  return [noteName, +octaveNum, noteIndex] as const;
+  return [noteName, +octaveNum, noteDegree] as const;
 };
 
 
-const getIntervalNum = (note: string) => {
-  const [, octaveNum, noteIndex] = parseNote(note);
-  return OCTAVE_DIVISIONS * octaveNum + noteIndex;
+const getCent = (note: string) => {
+  const [, octaveNum, noteDegree] = parseNote(note);
+  return CENTS_IN_OCTAVE * octaveNum + noteDegree * DEGREE_SIZE_IN_CENTS;
 };
 
 const getFrequency = (note: string) => {
-  return BASE_FREQUENCY * Math.pow(INTERVAL_FACTOR, getIntervalNum(note));
+  return FREQUENCY_OFFSET * Math.pow(INTERCENT_FACTOR, getCent(note));
 }
 
 
@@ -105,24 +110,24 @@ interface NoteKeyProps {
 
 
 export default () => {
-  const intervalCountOffset = OCTAVE_DIVISIONS * 3; // 3 octaves;
+  const centCountOffset = CENTS_IN_OCTAVE * 3; // 3 octaves;
   const octaveCount = 5;
 
   const whiteNotes = [];
   {
-    const end = intervalCountOffset + OCTAVE_DIVISIONS * octaveCount + 1;
-    for (let d = intervalCountOffset; d < end; d += 2) {
+    const end = centCountOffset + CENTS_IN_OCTAVE * octaveCount + 1;
+    for (let cent = centCountOffset; cent < end; cent += 2 * DEGREE_SIZE_IN_CENTS) {
       whiteNotes.push(
-        <NoteKey key={d} note={getNoteName(d)} />
+        <NoteKey key={cent} note={getNoteName(cent)} />
       );
     }
   }
   const blackNotes = [];
   {
-    const end = intervalCountOffset + OCTAVE_DIVISIONS * octaveCount;
-    for (let d = intervalCountOffset + 1; d < end; d += 2) {
+    const end = centCountOffset + CENTS_IN_OCTAVE * octaveCount;
+    for (let cent = centCountOffset + DEGREE_SIZE_IN_CENTS; cent < end; cent += 2 * DEGREE_SIZE_IN_CENTS) {
       blackNotes.push(
-        <NoteKey key={d} note={getNoteName(d)} />
+        <NoteKey key={cent} note={getNoteName(cent)} />
       );
     }
   }
