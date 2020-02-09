@@ -6,7 +6,7 @@ import './Keyboard.scss';
 
 
 export const Keyboard = ({ startOctave, rangeInOctaves }: KeyboardProps) => {
-  const { degreeCount } = useEdoContext();
+  const { degreeCountPerOctave } = useEdoContext();
 
 
   const [rows, ] = useState<Array<KeyboardKeyRowProps & { name: string }>>([
@@ -14,15 +14,16 @@ export const Keyboard = ({ startOctave, rangeInOctaves }: KeyboardProps) => {
       name: 'black',
       startOctave: startOctave,
       startDegree: 1,
-      rangeInDegree: rangeInOctaves * degreeCount,
+      rangeInDegree: rangeInOctaves * degreeCountPerOctave,
       degrees: ['C#', 'D#', 'F#', 'G#', 'A#'],
       keyStyleClass: 'black',
+      shift: 1,
     },
     {
       name: 'white',
       startOctave: startOctave,
       startDegree: 0,
-      rangeInDegree: rangeInOctaves * degreeCount + 1,
+      rangeInDegree: rangeInOctaves * degreeCountPerOctave,
       degrees: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
       keyStyleClass: 'white',
     },

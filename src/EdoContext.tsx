@@ -14,7 +14,7 @@ const defaultNotes = [
 
 interface EdoContextProps {
   notes: string[];
-  degreeCount: number;
+  degreeCountPerOctave: number;
   degreeSizeInCents: number;
   setNotes: (notes: string[]) => void;
   getNoteName: (cents: number) => string;
@@ -88,7 +88,7 @@ export const EdoContextProvider = ({ children }: EdoContextProviderProps) => {
   const contextProps = useShallowMemoizedObject({
     notes,
     setNotes,
-    degreeCount: notes.length,
+    degreeCountPerOctave: notes.length,
     degreeSizeInCents,
     getNoteName,
     parseNote,

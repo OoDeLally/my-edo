@@ -7,31 +7,39 @@ import './App.scss';
 
 
 export const KeyboardKeyRow =
-  ({ startOctave, startDegree, rangeInDegree, keyStyleClass, degrees }: KeyboardKeyRowProps) => {
+  ({ startOctave, startDegree, rangeInDegree, keyStyleClass, degrees, shift }: KeyboardKeyRowProps) => {
   const { degreeSizeInCents, getNoteName, parseNote } = useEdoContext();
 
   const keyboardKeys = useMemo(
     () => {
       const keys = [];
+      if (shift !== undefined) {
+        for (let i = 0; i < shift; i++) {
+          keys.push(<div key={`start-half-sep-${i}`} className="key-half-separator">&nbsp;</div>)
+        }
+      }
       const startCent = startOctave * CENTS_IN_OCTAVE + startDegree * degreeSizeInCents;
-      const step = 1 * degreeSizeInCents;
       const end = startCent + rangeInDegree * degreeSizeInCents;
-      for (let cent = startCent; cent < end; cent += step) {
+      let skippedDegreeCount = 0;
+      for (let cent = startCent; cent < end; cent += degreeSizeInCents) {
         const note = getNoteName(cent);
-        console.log('note :', note);
         const [degreeName] = parseNote(note);
-        console.log('degreeName :', degreeName);
-        keys.push(
-          degrees.includes(degreeName)
-            ? <KeyboardKey key={cent} note={note} keyStyleClass={keyStyleClass} />
-            : <div className="key-separator" key={cent}>&nbsp;</div>
-        );
+        const shouldShow = degrees.includes(degreeName);
+        if (shouldShow) {
+          skippedDegreeCount = 0;
+          keys.push(<KeyboardKey key={cent} note={note} keyStyleClass={keyStyleClass} />);
+        } else if (skippedDegreeCount > 0) {
+          skippedDegreeCount = 0;
+          keys.push(<div className="key-separator" key={cent}>&nbsp;</div>);
+        } else {
+          skippedDegreeCount++;
+        }
       }
       return keys;
     },
     [
       degrees, degreeSizeInCents, getNoteName, startOctave, parseNote,
-      startDegree, rangeInDegree, keyStyleClass
+      startDegree, rangeInDegree, keyStyleClass, shift,
     ],
   );
 
@@ -49,4 +57,5 @@ export interface KeyboardKeyRowProps {
   rangeInDegree: number;
   degrees: string[];
   keyStyleClass?: string;
+  shift?: number;
 }
