@@ -6,7 +6,9 @@ import './App.css';
 const OCTAVE_DIVISIONS = 12;
 const BASE_FREQUENCY = 16.35;
 const NOTE_NAMES = [
-  'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'
+  'C', 'K', 'D', 'L', 'E', 'F', 'M', 'G', 'P', 'A', 'H', 'B',
+  // 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B',
+  // 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
 ];
 
 if (NOTE_NAMES.length !== OCTAVE_DIVISIONS) {
