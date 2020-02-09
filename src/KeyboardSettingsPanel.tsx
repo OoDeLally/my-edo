@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useKeyboardSettingsContext } from './KeyboardSettingsContext';
+import React from 'react';
+import { HIGHEST_OCTAVE_NUMBER, useKeyboardSettingsContext } from './KeyboardSettingsContext';
 import { NumberInput } from './NumberInput';
 
 
@@ -12,11 +12,11 @@ export const KeyboardSettingsPanel = () => {
     <div className="keyboard-settings-panel">
       <label>
         Starting octave:&nbsp;
-        <NumberInput min={1} max={10} initialValue={startOctave} onChange={setStartOctave} />
+        <NumberInput min={2} max={HIGHEST_OCTAVE_NUMBER - 1} initialValue={startOctave} onChange={setStartOctave} />
       </label>
       <label>
         Tessitura (number of octaves):&nbsp;
-        <NumberInput min={1} max={HIGHEST_OCTAVE_NUMBER - startOctave} initialValue={rangeInOctaves} onChange={setRangeInOctaves} />
+        <NumberInput min={1} max={HIGHEST_OCTAVE_NUMBER - 1} initialValue={rangeInOctaves} onChange={setRangeInOctaves} />
       </label>
     </div>
   );

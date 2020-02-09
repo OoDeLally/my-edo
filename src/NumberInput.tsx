@@ -3,15 +3,14 @@ import React, { useRef, useEffect, useCallback } from 'react';
 
 export const NumberInput = ({ initialValue, onBlur, onChange, min, max }: NumberInputProps) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const valueRef = useRef<number>(initialValue);
   useEffect(
     () => {
       const input = inputRef.current;
       if (input) {
-        input.value = String(valueRef.current);
+        input.value = String(initialValue);
       }
     },
-    [valueRef, inputRef],
+    [initialValue, inputRef],
   );
 
   const handleBlur = useCallback(
