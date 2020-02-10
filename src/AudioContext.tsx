@@ -1,19 +1,17 @@
-import React, { ReactNode, useCallback, useContext, useMemo, useRef } from 'react';
+import React, { ReactNode, useCallback, useContext, useMemo } from 'react';
 import { useShallowMemoizedObject } from './hooks';
 
-
-const MASTER_GAIN_FACTOR = 0.8;
 
 const audioContext = new window.AudioContext();
 
 
-type DisconnectGain = () => void;
-type ConnectGain = (gainNode: GainNode) => DisconnectGain;
+type DisconnectAudioNode = () => void;
+type ConnectAudioNode = (audioNode: AudioNode) => DisconnectAudioNode;
 
 
 interface AudioContextProps {
   audioContext: AudioContext;
-  connectGain: ConnectGain;
+  connectNode: ConnectAudioNode;
 }
 
 
@@ -26,52 +24,29 @@ export const useAudioContext = () =>
 
 
 export const AudioContextProvider = ({ children }: AudioContextProviderProps) => {
-  const inputNodes = useRef(new Set<GainNode>()).current;
 
-  const masterGainNode = useMemo(
+  const compressorNode = useMemo(
     () => {
-      const node = audioContext.createGain();
+      const node = audioContext.createDynamicsCompressor();
       node.connect(audioContext.destination);
-      node.gain.value = 0;
       return node;
     },
     [],
   );
 
-  const updateMasterGain = useCallback(
-    () => {
-      console.log('inputNodes.size :', inputNodes.size);
-      if (inputNodes.size === 0) {
-        masterGainNode.gain.value = 0;
-      } else {
-        const inputSum = Array.from(inputNodes.values()).reduce((sum, node) => {
-          console.log('node.gain.value :', node.gain.value);
-          return sum + node.gain.value;
-        }, 0);
-        console.log('inputSum :', inputSum);
-        masterGainNode.gain.value = MASTER_GAIN_FACTOR * inputSum;
-      };
-      console.log('masterGainNode.gain.value :', masterGainNode.gain.value);
-    },
-    [inputNodes, masterGainNode],
-  );
-
-  const connectGain = useCallback(
-    (gainNode: GainNode) => {
-      gainNode.connect(masterGainNode);
-      inputNodes.add(gainNode);
-      updateMasterGain();
+  const connectNode = useCallback(
+    (audioNode: AudioNode) => {
+      audioNode.connect(compressorNode);
       return () => {
-        gainNode.disconnect();
-        inputNodes.delete(gainNode);
+        audioNode.disconnect();
       };
     },
-    [inputNodes, updateMasterGain, masterGainNode],
+    [compressorNode],
   );
 
   const contextProps = useShallowMemoizedObject({
     audioContext,
-    connectGain,
+    connectNode,
   });
 
   return (

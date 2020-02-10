@@ -8,8 +8,8 @@ import { Oscillator } from './Oscillator';
 
 export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
   const { getFrequency, parseNote } = useEdoContext();
-  const { audioContext, connectGain } = useAudioContext();
-  const disconnectGainRef = useRef<(() => void) | null>(null);
+  const { audioContext, connectNode } = useAudioContext();
+  const disconnectNodeRef = useRef<(() => void) | null>(null);
   const oscRef = useRef<Oscillator | null>(null);
   const [isHeld, setIsHeld] = useState(false);
   const [oscillatorPlayingCount, setOscillatorPlayingCount] = useState(0);
@@ -19,20 +19,20 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
   const start = useCallback(
     () => {
       const osc = new Oscillator(audioContext, frequency);
-      disconnectGainRef.current = connectGain(osc.outputNode());
+      disconnectNodeRef.current = connectNode(osc.outputNode());
       osc.start();
       oscRef.current = osc;
       setOscillatorPlayingCount(val => val + 1);
     },
-    [audioContext, connectGain, setOscillatorPlayingCount, frequency, oscRef, disconnectGainRef],
+    [audioContext, connectNode, setOscillatorPlayingCount, frequency, oscRef, disconnectNodeRef],
   );
   const stop = useCallback(
     () => {
       const oscillator = oscRef.current;
       oscRef.current = null;
       if (oscillator) {
-        const disconnectGain = disconnectGainRef.current!;
-        disconnectGainRef.current = null;
+        const disconnectGain = disconnectNodeRef.current!;
+        disconnectNodeRef.current = null;
         oscillator.stop(
           () => {
             disconnectGain();
@@ -41,7 +41,7 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
         );
       }
     },
-    [oscRef, disconnectGainRef, setOscillatorPlayingCount],
+    [oscRef, disconnectNodeRef, setOscillatorPlayingCount],
   );
 
   const toggleHold = useCallback(

@@ -2,6 +2,7 @@
 
 const START_TRANSITION_DURATION_IN_MS = 50;
 const STOP_TRANSITION_DURATION_IN_MS = 50;
+const GAIN_WHEN_ACTIVE = 0.1;
 
 
 export class Oscillator {
@@ -29,7 +30,7 @@ export class Oscillator {
   start() {
     this.audioContext.resume();
     this.gainNode.gain.setTargetAtTime(
-      1,
+      GAIN_WHEN_ACTIVE,
       this.audioContext.currentTime,
       START_TRANSITION_DURATION_IN_MS / 1000
     );
