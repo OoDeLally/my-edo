@@ -3,11 +3,15 @@ import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import { useAudioContext } from './AudioContext';
 import { useTetContext } from './TetContext';
 import { Oscillator } from './Oscillator';
+import { useKeyboardSettingsContext } from './KeyboardSettingsContext';
+import { useIsComponentMounted } from './hooks';
 
 
 
 export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
+  const isComponentMountedRef = useIsComponentMounted();
   const { getFrequency, parseNote } = useTetContext();
+  const { moveDegreeToOtherRow } = useKeyboardSettingsContext();
   const { audioContext, connectNode } = useAudioContext();
   const disconnectNodeRef = useRef<(() => void) | null>(null);
   const oscRef = useRef<Oscillator | null>(null);
@@ -35,13 +39,15 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
         disconnectNodeRef.current = null;
         oscillator.stop(
           () => {
-            disconnectGain();
-            setOscillatorPlayingCount(val => val - 1);
+            if (isComponentMountedRef.current) {
+              disconnectGain();
+              setOscillatorPlayingCount(val => val - 1);
+            }
           }
         );
       }
     },
-    [oscRef, disconnectNodeRef, setOscillatorPlayingCount],
+    [oscRef, disconnectNodeRef, setOscillatorPlayingCount, isComponentMountedRef],
   );
 
   const toggleHold = useCallback(
@@ -84,6 +90,18 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
     [isHeld, start],
   );
 
+  const degreeName = useMemo(
+    () => parseNote(note)[0],
+    [note, parseNote],
+  );
+
+  const toggleKeyboardRow = useCallback(
+    () => {
+      moveDegreeToOtherRow(degreeName);
+    },
+    [moveDegreeToOtherRow, degreeName],
+  );
+
   useEffect(() => {
     if (isHeld) {
       start();
@@ -92,10 +110,6 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
     }
   }, [isHeld, start, stop]);
 
-  const label = useMemo(
-    () => parseNote(note)[0],
-    [note, parseNote],
-  );
 
   const octaveNum = useMemo(
     () => parseNote(note)[1],
@@ -111,8 +125,9 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
       onMouseOut={handleMouseUp}
       onMouseUp={handleMouseUp}
       onMouseOver={handleMouseOver}
+      onDoubleClick={toggleKeyboardRow}
     >
-      <p className="title">{label}</p>
+      <p className="title">{degreeName}</p>
       <p className="subtitle">{octaveNum}</p>
     </button>
   );

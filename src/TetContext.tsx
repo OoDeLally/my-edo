@@ -62,12 +62,12 @@ export const TetContextProvider = ({ children }: TetContextProviderProps) => {
       if (!match) {
         throw new Error(`Could not parse note ${note}`);
       }
-      const [, noteName, octaveNum] = match;
-      const noteDegree = notes.findIndex(v => v === noteName);
-      if (noteDegree === -1) {
+      const [, degreeName, octaveNum] = match;
+      const degreeIndex = notes.findIndex(v => v === degreeName);
+      if (degreeIndex === -1) {
         throw new Error(`Could not find note name ${note}`);
       }
-      return [noteName, +octaveNum, noteDegree] as const;
+      return [degreeName, +octaveNum, degreeIndex] as const;
     },
     [notes],
   );

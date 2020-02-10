@@ -11,21 +11,19 @@ const DEFAULT_RANGE_SIZE = 3;
 export const HIGHEST_OCTAVE_NUMBER = 8;
 
 
-interface KeyboardRowSettings {
-  notes: string[];
-  keyStyleClass: string;
-}
+
+type KeyboardLayout = [string[], string[]];
 
 
 interface KeyboardSettingsContextProps {
   startOctave: number;
   startRelativeCent: number;
   rangeSize: number;
-  rowSettings: KeyboardRowSettings[];
+  layout: KeyboardLayout;
   setStartOctave: (newStartOctave: number) => void;
   setStartRelativeCent: (newStartRelativeCent: number) => void;
   setRangeSize: (newRangeInOctaves: number) => void;
-  setRowSettings: (rows: KeyboardRowSettings[]) => void;
+  moveDegreeToOtherRow: (degreeName: string) => void;
 }
 
 
@@ -42,9 +40,7 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
   const [startOctave, setStartOctave] = useState(DEFAULT_START_OCTAVE);
   const [rangeSize, setRangeSize] = useState(DEFAULT_RANGE_SIZE);
   const [startRelativeCent, setStartRelativeCent] = useState(DEFAULT_START_RELATIVE_CENT);
-  const [rowSettings, setRowSettings] = useState<KeyboardRowSettings[]>([{
-    notes, keyStyleClass: 'white',
-  }]);
+  const [layout, setLayout] = useState<KeyboardLayout>([notes, []]);
 
   const handleSetStartOctave = useCallback(
     (newStartOctave: number) => {
@@ -61,7 +57,6 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
     [setStartRelativeCent],
   );
 
-
   const handleSetRangeSize = useCallback(
     (newRangeSize: number) => {
       setRangeSize(newRangeSize);
@@ -70,15 +65,28 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
     [setStartOctave, setRangeSize, startOctave],
   );
 
+  const moveDegreeToOtherRow = useCallback(
+    (degreeName: string) => {
+      setLayout(
+        ([whiteNotes, blackNotes]) =>
+          whiteNotes.includes(degreeName)
+            ? [whiteNotes.filter(note => note !== degreeName), [...blackNotes, degreeName]]
+            : [[...whiteNotes, degreeName], blackNotes.filter(note => note !== degreeName)]
+      );
+    },
+    [setLayout],
+  );
+
   const contextProps = useShallowMemoizedObject({
     startOctave,
     startRelativeCent,
     rangeSize,
-    rowSettings,
+    layout,
     setStartOctave: handleSetStartOctave,
     setStartRelativeCent: handleSetStartRelativeCent,
     setRangeSize: handleSetRangeSize,
-    setRowSettings,
+    setLayout,
+    moveDegreeToOtherRow,
   });
 
   return (
