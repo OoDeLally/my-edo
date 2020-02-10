@@ -1,5 +1,5 @@
 import React from 'react';
-import { EdoContextProvider } from './EdoContext';
+import { EdoContextProvider, useEdoContext } from './EdoContext';
 import { Keyboard } from './Keyboard';
 
 import './App.scss';
@@ -9,15 +9,19 @@ import { KeyboardSettingsContextProvider, useKeyboardSettingsContext } from './K
 
 
 const KeyboardContainer = () => {
+  const { degreeCountPerOctave } = useEdoContext();
   const { startOctave, rangeInOctaves } = useKeyboardSettingsContext();
   return (
-    <div className="keyboard-container">
-      <KeyboardSettingsPanel />
-      <Keyboard
-        startOctave={startOctave}
-        rangeInOctaves={rangeInOctaves}
-      />
-    </div>
+    <>
+      <div className="keyboard-container">
+        <h1>My {degreeCountPerOctave}-TET keyboard</h1>
+        <KeyboardSettingsPanel />
+        <Keyboard
+          startOctave={startOctave}
+          rangeInOctaves={rangeInOctaves}
+        />
+      </div>
+    </>
   );
 }
 
@@ -25,11 +29,11 @@ const KeyboardContainer = () => {
 export default () => {
   return (
     <div className="App">
-      <KeyboardSettingsContextProvider>
-        <EdoContextProvider>
+      <EdoContextProvider>
+        <KeyboardSettingsContextProvider>
           <KeyboardContainer/>
-        </EdoContextProvider>
-      </KeyboardSettingsContextProvider>
+        </KeyboardSettingsContextProvider>
+      </EdoContextProvider>
     </div>
   );
 }

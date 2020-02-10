@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
+import { AudioContextProvider } from './AudioContext';
 import { useEdoContext } from './EdoContext';
-import './Keyboard.scss';
 import { KeyboardKeyRow } from './KeyboardKeyRow';
 
+import './Keyboard.scss';
 
 
 export const Keyboard = ({ startOctave, rangeInOctaves }: KeyboardProps) => {
@@ -36,9 +37,11 @@ export const Keyboard = ({ startOctave, rangeInOctaves }: KeyboardProps) => {
 
   return (
     <div className="keyboard">
-      {
-        rows.map(({ name, ...rowProps}) => <KeyboardKeyRow key={name} {...rowProps} />)
-      }
+      <AudioContextProvider>
+        {
+          rows.map(({ name, ...rowProps}) => <KeyboardKeyRow key={name} {...rowProps} />)
+        }
+      </AudioContextProvider>
     </div>
   );
 }

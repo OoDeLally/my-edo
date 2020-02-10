@@ -1,42 +1,47 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { useAudioContext } from './AudioContext';
 import { useEdoContext } from './EdoContext';
-
-
-const audioContext = new window.AudioContext();
+import { Oscillator } from './Oscillator';
 
 
 
 export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
   const { getFrequency, parseNote } = useEdoContext();
+  const { audioContext, connectGain } = useAudioContext();
+  const disconnectGainRef = useRef<(() => void) | null>(null);
+  const oscRef = useRef<Oscillator | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const gainNode = useMemo(
+  const frequency = useMemo(() => getFrequency(note), [getFrequency, note]);
+
+
+  const start = useCallback(
     () => {
-      const node = audioContext.createGain();
-      node.connect(audioContext.destination);
-      node.gain.value = 0;
-      return node;
-    },
-    [],
-  );
-  useEffect(
-    () => {
-      const osc = audioContext.createOscillator();
-      osc.frequency.value = getFrequency(note);
-      osc.connect(gainNode);
+      const osc = new Oscillator(audioContext, frequency);
+      disconnectGainRef.current = connectGain(osc.outputNode());
       osc.start();
+      oscRef.current = osc;
+      setIsPlaying(true);
     },
-    [note, gainNode, getFrequency],
+    [audioContext, connectGain, setIsPlaying, frequency, oscRef, disconnectGainRef],
   );
-  const start = useCallback(() => {
-    audioContext.resume();
-    gainNode.gain.setTargetAtTime(0.3, audioContext.currentTime, 0.05);
-    setIsPlaying(true);
-  }, [gainNode, setIsPlaying]);
-  const stop = useCallback(() => {
-    gainNode.gain.setTargetAtTime(0, audioContext.currentTime, 0.05);
-    setIsPlaying(false);
-  }, [gainNode, setIsPlaying]);
+  const stop = useCallback(
+    () => {
+      const oscillator = oscRef.current;
+      oscRef.current = null;
+      if (oscillator) {
+        const disconnectGain = disconnectGainRef.current!;
+        disconnectGainRef.current = null;
+        oscillator.stop(
+          () => {
+            disconnectGain();
+            setIsPlaying(false);
+          }
+        );
+      }
+    },
+    [oscRef, disconnectGainRef, setIsPlaying],
+  );
 
   const label = useMemo(
     () => parseNote(note)[0],
