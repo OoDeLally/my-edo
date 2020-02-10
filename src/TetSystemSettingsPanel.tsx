@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useRef } from 'react';
 
 import { NumberInput } from './NumberInput';
 import { useTetContext } from './TetContext';
+import { uniq } from 'lodash';
 
 
 
@@ -13,7 +14,7 @@ export const TetSystemSettingsPanel = () => {
 
   const handleNoteChange = useCallback(
     () => {
-      setNotes(noteInputRef.current!.value.split(' ').filter(str => str));
+      setNotes(uniq(noteInputRef.current!.value.split(' ').filter(str => str)));
     },
     [noteInputRef, setNotes],
   );

@@ -37,7 +37,7 @@ const westernLayout: KeyboardLayout = [['C', 'D', 'E', 'F', 'G', 'A', 'B'], ['C#
 
 const createInitialLayout = (notes: string[]) => {
   const allWesternNotes = westernLayout.flat();
-  if (isEqual(notes.sort(), allWesternNotes.sort())) {
+  if (isEqual([...notes].sort(), [...allWesternNotes].sort())) {
     return westernLayout;
   } else {
     return [notes, []] as KeyboardLayout;
