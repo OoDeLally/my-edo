@@ -42,6 +42,7 @@ export const Keyboard = ({ startOctave, rangeInOctaves }: KeyboardProps) => {
           rows.map(({ name, ...rowProps}) => <KeyboardKeyRow key={name} {...rowProps} />)
         }
       </AudioContextProvider>
+      <p>Middle-Click: Hold the key</p>
     </div>
   );
 }

@@ -9,18 +9,26 @@ import { KeyboardSettingsContextProvider, useKeyboardSettingsContext } from './K
 
 
 const KeyboardContainer = () => {
-  const { degreeCountPerOctave } = useEdoContext();
+  const { degreeCountPerOctave, degreeSizeInCents } = useEdoContext();
   const { startOctave, rangeInOctaves } = useKeyboardSettingsContext();
   return (
     <>
       <div className="keyboard-container">
         <h1>My {degreeCountPerOctave}-TET keyboard</h1>
+        {
+          degreeCountPerOctave > 0 && (
+          <div>({Math.round(degreeSizeInCents * 10) / 10} cents / degree)</div>
+          )
+        }
         <KeyboardSettingsPanel />
-        <Keyboard
-          startOctave={startOctave}
-          rangeInOctaves={rangeInOctaves}
-        />
-        <p>Middle-Click: Hold the key</p>
+        {
+          degreeCountPerOctave > 0 && (
+            <Keyboard
+              startOctave={startOctave}
+              rangeInOctaves={rangeInOctaves}
+            />
+          )
+        }
       </div>
     </>
   );

@@ -24,6 +24,11 @@
       text-align: center;
     }
 
+    button.note-key {
+      outline: none;
+      border: 1px grey solid;
+    }
+
     .key-half-separator {
       width: 1rem;
       height: 5rem;
