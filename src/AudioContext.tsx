@@ -26,13 +26,13 @@ export const useAudioContext = () =>
 
 
 export const AudioContextProvider = ({ children }: AudioContextProviderProps) => {
-  const connectionCountRef = useRef(0);
+  const inputNodes = useRef(new Set<GainNode>()).current;
 
   const masterGainNode = useMemo(
     () => {
       const node = audioContext.createGain();
       node.connect(audioContext.destination);
-      node.gain.value = MASTER_GAIN_FACTOR;
+      node.gain.value = 0;
       return node;
     },
     [],
@@ -40,27 +40,33 @@ export const AudioContextProvider = ({ children }: AudioContextProviderProps) =>
 
   const updateMasterGain = useCallback(
     () => {
-      masterGainNode.gain.value = MASTER_GAIN_FACTOR * (
-        connectionCountRef.current > 0
-        ? 1 / connectionCountRef.current
-        : 1
-      );
+      console.log('inputNodes.size :', inputNodes.size);
+      if (inputNodes.size === 0) {
+        masterGainNode.gain.value = 0;
+      } else {
+        const inputSum = Array.from(inputNodes.values()).reduce((sum, node) => {
+          console.log('node.gain.value :', node.gain.value);
+          return sum + node.gain.value;
+        }, 0);
+        console.log('inputSum :', inputSum);
+        masterGainNode.gain.value = MASTER_GAIN_FACTOR * inputSum;
+      };
       console.log('masterGainNode.gain.value :', masterGainNode.gain.value);
     },
-    [connectionCountRef, masterGainNode],
+    [inputNodes, masterGainNode],
   );
 
   const connectGain = useCallback(
     (gainNode: GainNode) => {
-      connectionCountRef.current++;
-      // updateMasterGain();
       gainNode.connect(masterGainNode);
+      inputNodes.add(gainNode);
+      updateMasterGain();
       return () => {
         gainNode.disconnect();
-        connectionCountRef.current--;
+        inputNodes.delete(gainNode);
       };
     },
-    [connectionCountRef, updateMasterGain, masterGainNode],
+    [inputNodes, updateMasterGain, masterGainNode],
   );
 
   const contextProps = useShallowMemoizedObject({
