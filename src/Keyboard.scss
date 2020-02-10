@@ -1,3 +1,4 @@
+@import './index.scss';
 
 .keyboard {
 
@@ -76,10 +77,13 @@
     margin-top: 1rem;
 
     .info {
-      p {
-        font-size: 0.6rem;
-        margin: 0;
-        padding-top: 0.5rem;
+      font-size: 0.6rem;
+      margin: 0;
+      padding: 0.5rem 1rem;
+      img.icon {
+        vertical-align: middle;
+        margin-right: 1em;
+        @include disable-user-drag;
       }
     }
   }

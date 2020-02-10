@@ -51,20 +51,31 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
     [oscRef, disconnectNodeRef, setOscillatorPlayingCount, isComponentMountedRef],
   );
 
-  const toggleHold = useCallback(
-    () => {
-      setIsHeld(val => !val);
-    },
-    [setIsHeld],
+  const degreeName = useMemo(
+    () => parseNote(note)[0],
+    [note, parseNote],
   );
 
   const handleMouseDown = useCallback(
-    () => {
+    (event: React.MouseEvent) => {
+      const isMiddleClick = event.buttons === 4;
+      if (isMiddleClick) {
+        setIsHeld(val => !val);
+        return;
+      }
+      const isRightClick = event.buttons === 2;
+      if (isRightClick) {
+        moveDegreeToOtherRow(degreeName);
+        return;
+      }
       if (!isHeld) {
-        start();
+        const isLeftClick = event.buttons === 1;
+        if (isLeftClick) {
+          start();
+        }
       }
     },
-    [isHeld, start],
+    [isHeld, start, setIsHeld, moveDegreeToOtherRow, degreeName],
   );
 
 
@@ -91,17 +102,7 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
     [isHeld, start],
   );
 
-  const degreeName = useMemo(
-    () => parseNote(note)[0],
-    [note, parseNote],
-  );
 
-  const toggleKeyboardRow = useCallback(
-    () => {
-      moveDegreeToOtherRow(degreeName);
-    },
-    [moveDegreeToOtherRow, degreeName],
-  );
 
   useEffect(() => {
     if (isHeld) {
@@ -121,12 +122,10 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
   return (
     <button
       className={classNames('note-key', keyStyleClass, isPlaying && 'playing')}
-      onAuxClick={toggleHold}
       onMouseDown={handleMouseDown}
       onMouseOut={handleMouseUp}
       onMouseUp={handleMouseUp}
       onMouseOver={handleMouseOver}
-      onDoubleClick={toggleKeyboardRow}
     >
       <p className="title">{degreeName}</p>
       <p className="subtitle">{octaveNum}</p>
