@@ -19,6 +19,7 @@ export class Oscillator {
 
     const oscillatorNode = audioContext.createOscillator();
     oscillatorNode.frequency.value = frequency;
+    oscillatorNode.type = 'triangle'
     oscillatorNode.connect(this.gainNode);
     oscillatorNode.start();
   }
@@ -44,6 +45,6 @@ export class Oscillator {
     );
     setTimeout(() => {
       callback();
-    }, STOP_TRANSITION_DURATION_IN_MS * 4);
+    }, STOP_TRANSITION_DURATION_IN_MS * 2);
   }
 }

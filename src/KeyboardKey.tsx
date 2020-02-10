@@ -70,6 +70,20 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
     [isHeld, stop],
   );
 
+
+  const handleMouseOver = useCallback(
+    (event: React.MouseEvent) => {
+      if (isHeld) {
+        return;
+      }
+      const isMouseClickDown = event.buttons & 1;
+      if (isMouseClickDown) {
+        start();
+      }
+    },
+    [isHeld, start],
+  );
+
   useEffect(() => {
     if (isHeld) {
       start();
@@ -91,6 +105,7 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
       onMouseDown={handleMouseDown}
       onMouseOut={handleMouseUp}
       onMouseUp={handleMouseUp}
+      onMouseOver={handleMouseOver}
     >
       {label}
     </button>
