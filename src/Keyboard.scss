@@ -1,11 +1,5 @@
 
 .keyboard {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  align-content: space-around;
 
   .row {
     display: flex;
@@ -14,6 +8,10 @@
     justify-content: flex-start;
     align-items: flex-start;
     align-content: space-around;
+
+    &.white {
+      margin-top: -1rem;
+    }
 
     button.note-key, .key-separator {
       width: 2rem;
@@ -26,14 +24,14 @@
       border: 1px grey solid;
 
       &:first-child {
-        border-bottom-left-radius: 0.5em;
+        border-bottom-left-radius: 0.5rem;
       }
       &:last-child {
-        border-bottom-right-radius: 0.5em;
+        border-bottom-right-radius: 0.5rem;
       }
 
       p {
-        margin: 0.1em;
+        margin: 0.1rem;
       }
     }
 
@@ -45,18 +43,22 @@
     button.note-key.white {
       background: white;
       color: black;
+      z-index: 100;
       &.playing {
-        box-shadow: 0em 0em 1em grey inset;
+        box-shadow: 0rem 0rem 1rem grey inset;
       }
       .subtitle {
         color: grey;
       }
     }
+
     button.note-key.black {
       background: black;
       color: white;
+      z-index: 200;
+
       &.playing {
-        box-shadow: 0em 0em 1em grey inset;
+        box-shadow: 0rem 0rem 1rem grey inset;
       }
       .subtitle {
         color: grey;
@@ -64,8 +66,23 @@
     }
   }
 
-  .info {
-    font-size: 0.6rem;
+
+  .info-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: space-around;
+    margin-top: 1rem;
+
+    .info {
+      p {
+        font-size: 0.6rem;
+        margin: 0;
+        padding-top: 0.5rem;
+      }
+    }
   }
 
 }

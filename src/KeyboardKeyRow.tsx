@@ -3,11 +3,12 @@ import { CENTS_IN_OCTAVE, useTetContext } from './TetContext';
 import { KeyboardKey } from './KeyboardKey';
 
 import './App.scss';
+import classNames from 'classnames';
 
 
 
 export const KeyboardKeyRow =
-  ({ startOctave, rangeSize, keyStyleClass, degrees, extraDegreeCount, shift }: KeyboardKeyRowProps) => {
+  ({ startOctave, rangeSize, keyStyleClass, degrees, extraDegreeCount, shift, className }: KeyboardKeyRowProps) => {
   const { degreeSizeInCents, getNoteName, parseNote } = useTetContext();
 
   const keyboardKeys = useMemo(
@@ -43,7 +44,7 @@ export const KeyboardKeyRow =
   );
 
   return (
-    <div className="row">
+    <div className={classNames('row', className)}>
       {keyboardKeys}
     </div>
   );
@@ -57,4 +58,5 @@ export interface KeyboardKeyRowProps {
   degrees: string[];
   keyStyleClass?: string;
   shift?: number;
+  className?: string;
 }

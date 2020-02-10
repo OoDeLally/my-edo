@@ -21,6 +21,7 @@ export const Keyboard = () => {
         {
           blackNotes.length > 0 && (
             <KeyboardKeyRow
+              className="black"
               startOctave={startOctave}
               rangeSize={rangeSize}
               degrees={blackNotes}
@@ -31,6 +32,7 @@ export const Keyboard = () => {
           )
         }
         <KeyboardKeyRow
+          className="white"
           startOctave={startOctave}
           rangeSize={rangeSize}
           degrees={whiteNotes}
@@ -39,7 +41,12 @@ export const Keyboard = () => {
           shift={whiteRowShift}
         />
       </AudioContextProvider>
-      <p className="info">( Middle-Click: Hold the key )</p>
+      <div className="info-container">
+        <div className="info">
+          <p>Middle-Click: Hold the key</p>
+          <p>Double-Click: Move key to the other row</p>
+        </div>
+      </div>
     </div>
   );
 };
