@@ -16,11 +16,6 @@ const KeyboardContainer = () => {
     <>
       <div className="keyboard-container">
         <h1>My {degreeCountPerOctave}-TET system</h1>
-        {
-          degreeCountPerOctave > 0 && (
-          <div>({Math.round(degreeSizeInCents * 10) / 10} cents / degree)</div>
-          )
-        }
         <TetSystemSettingsPanel />
         <KeyboardSettingsPanel />
         {

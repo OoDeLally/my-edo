@@ -7,7 +7,7 @@ import { NumberInput } from './NumberInput';
 
 export const TetSystemSettingsPanel = () => {
   const noteInputRef = useRef<HTMLInputElement>(null);
-  const { notes, setNotes, degreeCountPerOctave, baseFrequency, setBaseFrequency } = useTetContext();
+  const { notes, setNotes, degreeCountPerOctave, baseFrequency, setBaseFrequency, degreeSizeInCents } = useTetContext();
   const noteFieldValue = useMemo(() => notes.join(' '), [notes]);
 
   const handleNoteChange = useCallback(
@@ -19,14 +19,18 @@ export const TetSystemSettingsPanel = () => {
 
   return (
     <div className="tet-system-settings-panel">
-      <label>
-        My system notes:&nbsp;
-        <input className="note-editor" type="text" defaultValue={noteFieldValue} onChange={handleNoteChange} ref={noteInputRef} />
-      </label>
+      <p>My notes are named</p>
+
+      <p>
+        <input className="note-editor" type="text" defaultValue={noteFieldValue} onChange={handleNoteChange} ref=
+        {noteInputRef} />
+      </p>
       {
         degreeCountPerOctave > 0 && (
           <p>
-            My system starts at <b>ƒ( {notes[0]}0 ) =&nbsp;
+            <b>{Math.round(degreeSizeInCents * 10) / 10} cents / degree</b>
+            &nbsp;
+            starting at <b>ƒ( {notes[0]}0 ) =&nbsp;
             <NumberInput
               type="text"
               className="base-frequency"

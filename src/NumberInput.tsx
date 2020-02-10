@@ -57,7 +57,7 @@ export const NumberInput = ({ initialValue, onBlur, onChange, min, max, enableMa
 
   return (
     <input
-      className={classNames('number-input', className)}
+      className={classNames('number', className)}
       type={type || 'number'}
       min={min}
       max={max}
