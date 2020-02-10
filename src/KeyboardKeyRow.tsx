@@ -15,7 +15,7 @@ export const KeyboardKeyRow =
       const keys = [];
       if (shift !== undefined) {
         for (let i = 0; i < shift; i++) {
-          keys.push(<div key={`start-half-sep-${i}`} className="key-half-separator">&nbsp;</div>)
+          keys.push(<div key={`start-half-sep-${i}`} className="key-half-separator">&nbsp;</div>);
         }
       }
       const startCent = startOctave * CENTS_IN_OCTAVE + startDegree * degreeSizeInCents;
@@ -48,7 +48,7 @@ export const KeyboardKeyRow =
       {keyboardKeys}
     </div>
   );
-}
+};
 
 
 export interface KeyboardKeyRowProps {

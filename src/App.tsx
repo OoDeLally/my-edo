@@ -10,7 +10,7 @@ import { TetSystemSettingsPanel } from './TetSystemSettingsPanel';
 
 
 const KeyboardContainer = () => {
-  const { degreeCountPerOctave, degreeSizeInCents } = useTetContext();
+  const { degreeCountPerOctave } = useTetContext();
   const { startOctave, rangeSize } = useKeyboardSettingsContext();
   return (
     <>
@@ -28,13 +28,13 @@ const KeyboardContainer = () => {
         }
         {
           degreeCountPerOctave === 0 && (
-            <p>A {degreeCountPerOctave}-TET system is a bit boring, isn't it?</p>
+            <p>A {degreeCountPerOctave}-TET system is a bit boring, isn&apos;t it?</p>
           )
         }
       </div>
     </>
   );
-}
+};
 
 
 export default () => {
@@ -47,4 +47,4 @@ export default () => {
       </TetContextProvider>
     </div>
   );
-}
+};

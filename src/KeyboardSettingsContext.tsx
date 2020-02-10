@@ -71,8 +71,8 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
     <KeyboardSettingsReactContext.Provider value={contextProps}>
       {children}
     </KeyboardSettingsReactContext.Provider>
-  )
-}
+  );
+};
 
 
 interface KeyboardSettingsContextProviderProps {

@@ -15,7 +15,7 @@ export const TetSystemSettingsPanel = () => {
       setNotes(noteInputRef.current!.value.split(' ').filter(str => str));
     },
     [noteInputRef, setNotes],
-  )
+  );
 
   return (
     <div className="tet-system-settings-panel">
@@ -44,4 +44,4 @@ export const TetSystemSettingsPanel = () => {
       }
     </div>
   );
-}
+};

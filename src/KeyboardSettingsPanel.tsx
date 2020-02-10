@@ -21,13 +21,25 @@ export const KeyboardSettingsPanel = () => {
           <>
             <p>
               Show&nbsp;
-              <NumberInput enableManualEdit={false} min={1} max={HIGHEST_OCTAVE_NUMBER - 1} initialValue={rangeSize} onChange={setRangeInOctaves} />
+              <NumberInput
+                enableManualEdit={false}
+                min={1}
+                max={HIGHEST_OCTAVE_NUMBER - 1}
+                initialValue={rangeSize}
+                onChange={setRangeInOctaves}
+              />
               &nbsp;octaves starting from octave #
-              <NumberInput enableManualEdit={false} min={1} max={HIGHEST_OCTAVE_NUMBER - 1} initialValue={startOctave} onChange={setStartOctave} />.
+              <NumberInput
+                enableManualEdit={false}
+                min={1}
+                max={HIGHEST_OCTAVE_NUMBER - 1}
+                initialValue={startOctave}
+                onChange={setStartOctave}
+              />.
             </p>
           </>
         )
       }
     </div>
   );
-}
+};

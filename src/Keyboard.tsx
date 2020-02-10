@@ -29,23 +29,23 @@ export const Keyboard = ({ startOctave, rangeInOctaves }: KeyboardProps) => {
           degrees: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
           keyStyleClass: 'white',
         },
-      ]
+      ];
     },
     [startOctave, rangeInOctaves, degreeCountPerOctave],
-  )
+  );
 
 
   return (
     <div className="keyboard">
       <AudioContextProvider>
         {
-          rows.map(({ name, ...rowProps}) => <KeyboardKeyRow key={name} {...rowProps} />)
+          rows.map(({ name, ...rowProps }) => <KeyboardKeyRow key={name} {...rowProps} />)
         }
       </AudioContextProvider>
       <p className="info">( Middle-Click: Hold the key )</p>
     </div>
   );
-}
+};
 
 
 interface KeyboardProps {

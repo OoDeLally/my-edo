@@ -3,7 +3,9 @@ import classNames from 'classnames';
 
 
 
-export const NumberInput = ({ initialValue, onBlur, onChange, min, max, enableManualEdit, className, type }: NumberInputProps) => {
+export const NumberInput = ({
+  initialValue, onBlur, onChange, min, max, enableManualEdit, className, type
+}: NumberInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(
@@ -35,7 +37,7 @@ export const NumberInput = ({ initialValue, onBlur, onChange, min, max, enableMa
       }
     },
     [initialValue],
-  )
+  );
 
   const handleBlur = useCallback(
     () => {

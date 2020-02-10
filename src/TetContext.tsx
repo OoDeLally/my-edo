@@ -49,7 +49,7 @@ export const TetContextProvider = ({ children }: TetContextProviderProps) => {
       const degree = (roundedCents % CENTS_IN_OCTAVE) / degreeSizeInCents;
       const note = notes[Math.round(degree)];
       if (!note) {
-        throw new Error(`Could not find name for degree ${degree}`)
+        throw new Error(`Could not find name for degree ${degree}`);
       }
       return `${note}${octaveNum}`;
     },
@@ -104,8 +104,8 @@ export const TetContextProvider = ({ children }: TetContextProviderProps) => {
     <TetReactContext.Provider value={contextProps}>
       {children}
     </TetReactContext.Provider>
-  )
-}
+  );
+};
 
 
 interface TetContextProviderProps {

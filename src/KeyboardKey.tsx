@@ -76,7 +76,7 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
       if (isHeld) {
         return;
       }
-      const isMouseClickDown = event.buttons & 1;
+      const isMouseClickDown = event.buttons & 1; // eslint-disable-line no-bitwise
       if (isMouseClickDown) {
         start();
       }
@@ -90,7 +90,7 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
     } else {
       stop();
     }
-  }, [isHeld, start, stop])
+  }, [isHeld, start, stop]);
 
   const label = useMemo(
     () => parseNote(note)[0],
@@ -116,7 +116,7 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
       <p>{octaveNum}</p>
     </button>
   );
-}
+};
 
 interface NoteKeyProps {
   note: string;

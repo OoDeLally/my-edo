@@ -19,7 +19,7 @@ export class Oscillator {
 
     const oscillatorNode = audioContext.createOscillator();
     oscillatorNode.frequency.value = frequency;
-    oscillatorNode.type = 'triangle'
+    oscillatorNode.type = 'triangle';
     oscillatorNode.connect(this.gainNode);
     oscillatorNode.start();
   }

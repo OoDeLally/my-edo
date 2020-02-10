@@ -53,8 +53,8 @@ export const AudioContextProvider = ({ children }: AudioContextProviderProps) =>
     <AudioReactContext.Provider value={contextProps}>
       {children}
     </AudioReactContext.Provider>
-  )
-}
+  );
+};
 
 
 interface AudioContextProviderProps {
