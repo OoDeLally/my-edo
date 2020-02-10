@@ -23,13 +23,6 @@
       outline: none;
       border: 1px grey solid;
 
-      &:first-child {
-        border-bottom-left-radius: 0.5rem;
-      }
-      &:last-child {
-        border-bottom-right-radius: 0.5rem;
-      }
-
       p {
         margin: 0.1rem;
       }
@@ -44,6 +37,12 @@
       background: white;
       color: black;
       z-index: 100;
+      &:first-child {
+        border-bottom-left-radius: 0.5rem;
+      }
+      &:last-child {
+        border-bottom-right-radius: 0.5rem;
+      }
       &.playing {
         box-shadow: 0rem 0rem 1rem grey inset;
       }
@@ -56,7 +55,7 @@
       background: black;
       color: white;
       z-index: 200;
-
+      border-radius: 0 0 0.5rem 0.5rem;
       &.playing {
         box-shadow: 0rem 0rem 1rem grey inset;
       }
