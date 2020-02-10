@@ -1,9 +1,10 @@
+import classNames from 'classnames';
 import React, { useMemo } from 'react';
-import { CENTS_IN_OCTAVE, useTetContext } from './TetContext';
+
 import { KeyboardKey } from './KeyboardKey';
+import { CENTS_IN_OCTAVE, useTetContext } from './TetContext';
 
 import './App.scss';
-import classNames from 'classnames';
 
 
 

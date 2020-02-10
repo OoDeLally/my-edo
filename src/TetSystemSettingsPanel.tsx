@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useRef } from 'react';
-import { useTetContext } from './TetContext';
+
 import { NumberInput } from './NumberInput';
+import { useTetContext } from './TetContext';
 
 
 

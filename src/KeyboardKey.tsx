@@ -1,10 +1,11 @@
 import classNames from 'classnames';
-import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
 import { useAudioContext } from './AudioContext';
-import { useTetContext } from './TetContext';
-import { Oscillator } from './Oscillator';
-import { useKeyboardSettingsContext } from './KeyboardSettingsContext';
 import { useIsComponentMounted } from './hooks';
+import { useKeyboardSettingsContext } from './KeyboardSettingsContext';
+import { Oscillator } from './Oscillator';
+import { useTetContext } from './TetContext';
 
 
 
