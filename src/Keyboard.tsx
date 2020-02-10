@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import { AudioContextProvider } from './AudioContext';
-import { useEdoContext } from './EdoContext';
+import { useTetContext } from './TetContext';
 import { KeyboardKeyRow } from './KeyboardKeyRow';
 
 import './Keyboard.scss';
 
 
 export const Keyboard = ({ startOctave, rangeInOctaves }: KeyboardProps) => {
-  const { degreeCountPerOctave } = useEdoContext();
+  const { degreeCountPerOctave } = useTetContext();
 
   const rows = useMemo(
     () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { EdoContextProvider, useEdoContext } from './EdoContext';
+import { TetContextProvider, useTetContext } from './TetContext';
 import { Keyboard } from './Keyboard';
 
 import './App.scss';
@@ -9,7 +9,7 @@ import { KeyboardSettingsContextProvider, useKeyboardSettingsContext } from './K
 
 
 const KeyboardContainer = () => {
-  const { degreeCountPerOctave, degreeSizeInCents } = useEdoContext();
+  const { degreeCountPerOctave, degreeSizeInCents } = useTetContext();
   const { startOctave, rangeInOctaves } = useKeyboardSettingsContext();
   return (
     <>
@@ -43,11 +43,11 @@ const KeyboardContainer = () => {
 export default () => {
   return (
     <div className="App">
-      <EdoContextProvider>
+      <TetContextProvider>
         <KeyboardSettingsContextProvider>
           <KeyboardContainer/>
         </KeyboardSettingsContextProvider>
-      </EdoContextProvider>
+      </TetContextProvider>
     </div>
   );
 }

@@ -1,14 +1,14 @@
 import React, { useMemo, useCallback, useRef } from 'react';
 import { HIGHEST_OCTAVE_NUMBER, useKeyboardSettingsContext } from './KeyboardSettingsContext';
 import { NumberInput } from './NumberInput';
-import { useEdoContext } from './EdoContext';
+import { useTetContext } from './TetContext';
 
 
 
 
 export const KeyboardSettingsPanel = () => {
   const noteInputRef = useRef<HTMLInputElement>(null);
-  const { notes, setNotes, degreeCountPerOctave } = useEdoContext();
+  const { notes, setNotes, degreeCountPerOctave } = useTetContext();
   const { startOctave, rangeInOctaves, setStartOctave, setRangeInOctaves, } = useKeyboardSettingsContext();
 
   const noteFieldValue = useMemo(() => notes.join(' '), [notes]);
@@ -34,7 +34,9 @@ export const KeyboardSettingsPanel = () => {
               <NumberInput min={1} max={HIGHEST_OCTAVE_NUMBER - 1} initialValue={rangeInOctaves} onChange={setRangeInOctaves} />
               &nbsp;octaves starting from octave #
               <NumberInput min={1} max={HIGHEST_OCTAVE_NUMBER - 1} initialValue={startOctave} onChange={setStartOctave} />
-              .
+              &nbsp; offsetted by &nbsp;
+              <NumberInput min={1} max={1200} initialValue={startOctave} onChange={setStartOctave} />
+              &nbsp; cents;
             </p>
           </>
         )

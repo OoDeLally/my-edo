@@ -12,7 +12,7 @@ const defaultNotes = [
 ];
 
 
-interface EdoContextProps {
+interface TetContextProps {
   notes: string[];
   degreeCountPerOctave: number;
   degreeSizeInCents: number;
@@ -26,15 +26,15 @@ interface EdoContextProps {
 }
 
 
-const EdoReactContext = React.createContext<EdoContextProps | null>(null);
+const TetReactContext = React.createContext<TetContextProps | null>(null);
 
 
 
-export const useEdoContext = () =>
-  useContext(EdoReactContext)!;
+export const useTetContext = () =>
+  useContext(TetReactContext)!;
 
 
-export const EdoContextProvider = ({ children }: EdoContextProviderProps) => {
+export const TetContextProvider = ({ children }: TetContextProviderProps) => {
   const [notes, setNotes] = useState<string[]>(defaultNotes);
 
   const degreeSizeInCents = CENTS_IN_OCTAVE / notes.length;
@@ -97,13 +97,13 @@ export const EdoContextProvider = ({ children }: EdoContextProviderProps) => {
   });
 
   return (
-    <EdoReactContext.Provider value={contextProps}>
+    <TetReactContext.Provider value={contextProps}>
       {children}
-    </EdoReactContext.Provider>
+    </TetReactContext.Provider>
   )
 }
 
 
-interface EdoContextProviderProps {
+interface TetContextProviderProps {
   children: ReactNode;
 }
