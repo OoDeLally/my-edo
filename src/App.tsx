@@ -14,7 +14,7 @@ const KeyboardContainer = () => {
   return (
     <>
       <div className="keyboard-container">
-        <h1>My {degreeCountPerOctave}-TET keyboard</h1>
+        <h1>My {degreeCountPerOctave}-TET system</h1>
         {
           degreeCountPerOctave > 0 && (
           <div>({Math.round(degreeSizeInCents * 10) / 10} cents / degree)</div>
@@ -27,6 +27,11 @@ const KeyboardContainer = () => {
               startOctave={startOctave}
               rangeInOctaves={rangeInOctaves}
             />
+          )
+        }
+        {
+          degreeCountPerOctave === 0 && (
+            <p>A {degreeCountPerOctave}-TET system is a bit boring, isn't it?</p>
           )
         }
       </div>

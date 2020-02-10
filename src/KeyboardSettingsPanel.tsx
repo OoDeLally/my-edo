@@ -29,14 +29,13 @@ export const KeyboardSettingsPanel = () => {
       {
         degreeCountPerOctave > 0 && (
           <>
-            <label>
-              Starting octave:&nbsp;
-              <NumberInput min={2} max={HIGHEST_OCTAVE_NUMBER - 1} initialValue={startOctave} onChange={setStartOctave} />
-            </label>
-            <label>
-              Tessitura (number of octaves):&nbsp;
+            <p>
+              Show&nbsp;
               <NumberInput min={1} max={HIGHEST_OCTAVE_NUMBER - 1} initialValue={rangeInOctaves} onChange={setRangeInOctaves} />
-            </label>
+              &nbsp;octaves starting from octave #
+              <NumberInput min={1} max={HIGHEST_OCTAVE_NUMBER - 1} initialValue={startOctave} onChange={setStartOctave} />
+              .
+            </p>
           </>
         )
       }

@@ -97,6 +97,11 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
     [note, parseNote],
   );
 
+  const octaveNum = useMemo(
+    () => parseNote(note)[1],
+    [note, parseNote],
+  );
+
   const isPlaying = oscillatorPlayingCount > 0;
   return (
     <button
@@ -107,7 +112,8 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
       onMouseUp={handleMouseUp}
       onMouseOver={handleMouseOver}
     >
-      {label}
+      <p>{label}</p>
+      <p>{octaveNum}</p>
     </button>
   );
 }
