@@ -27,6 +27,13 @@
     button.note-key {
       outline: none;
       border: 1px grey solid;
+
+      &:first-child {
+        border-bottom-left-radius: 0.5em;
+      }
+      &:last-child {
+        border-bottom-right-radius: 0.5em;
+      }
     }
 
     .key-half-separator {
@@ -38,7 +45,7 @@
       background: white;
       color: black;
       &.playing {
-        box-shadow: 0em 0em 1em lightgrey inset;
+        box-shadow: 0em 0em 1em grey inset;
       }
     }
     button.note-key.black {
