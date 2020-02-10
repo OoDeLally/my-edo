@@ -1,5 +1,5 @@
-import { isEqual } from 'lodash';
-import React, { ReactNode, useCallback, useContext, useState } from 'react';
+import { isEqual, intersection, difference } from 'lodash';
+import React, { ReactNode, useCallback, useContext, useState, useEffect } from 'react';
 
 import { useShallowMemoizedObject } from './hooks';
 import { useTetContext } from './TetContext';
@@ -89,6 +89,20 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
       );
     },
     [setLayout],
+  );
+
+  useEffect(
+    () => {
+      setLayout(
+        ([whiteNotes, blackNotes]) => {
+          const newWhiteNode = intersection(whiteNotes, notes);
+          const newBlackNode = intersection(blackNotes, notes);
+          const unknownNotes = difference(notes, newWhiteNode, newBlackNode);
+          return [[...newWhiteNode, ...unknownNotes], newBlackNode] as KeyboardLayout;
+        }
+      );
+    },
+    [notes],
   );
 
   const contextProps = useShallowMemoizedObject({
