@@ -3,7 +3,7 @@ import { useShallowMemoizedObject } from './hooks';
 
 
 export const CENTS_IN_OCTAVE = 1200;
-export const FREQUENCY_OFFSET = 16.35; // C0
+export const DEFAUL_BASE_FREQUENCY = 16.35; // C0
 export const INTERCENT_FACTOR = Math.pow(2, 1 / CENTS_IN_OCTAVE);
 
 
@@ -13,9 +13,11 @@ const defaultNotes = [
 
 
 interface TetContextProps {
+  baseFrequency: number;
   notes: string[];
   degreeCountPerOctave: number;
   degreeSizeInCents: number;
+  setBaseFrequency: (baseFrequency: number) => void;
   setNotes: (notes: string[]) => void;
   getNoteName: (cents: number) => string;
   // parseNote('C4') => ['C', 4, 0]
@@ -35,10 +37,10 @@ export const useTetContext = () =>
 
 
 export const TetContextProvider = ({ children }: TetContextProviderProps) => {
+  const [baseFrequency, setBaseFrequency] = useState(DEFAUL_BASE_FREQUENCY);
   const [notes, setNotes] = useState<string[]>(defaultNotes);
 
   const degreeSizeInCents = CENTS_IN_OCTAVE / notes.length;
-
 
   const getNoteName = useCallback(
     (cents: number) => {
@@ -80,14 +82,16 @@ export const TetContextProvider = ({ children }: TetContextProviderProps) => {
 
   const getFrequency = useCallback(
     (note: string) => {
-      return FREQUENCY_OFFSET * Math.pow(INTERCENT_FACTOR, getCent(note));
+      return baseFrequency * Math.pow(INTERCENT_FACTOR, getCent(note));
     },
-    [getCent],
+    [getCent, baseFrequency],
   );
 
   const contextProps = useShallowMemoizedObject({
     notes,
     setNotes,
+    baseFrequency,
+    setBaseFrequency,
     degreeCountPerOctave: notes.length,
     degreeSizeInCents,
     getNoteName,

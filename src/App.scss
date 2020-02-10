@@ -18,7 +18,7 @@
 }
 
 
-.keyboard-settings-panel {
+.keyboard-settings-panel, .tet-system-settings-panel {
 
   padding: 1rem;
 
@@ -30,13 +30,11 @@
     padding: 0.5rem;
     border: 1px solid lightgrey;
     border-radius: 0.2rem;
+    color: #444444;
   }
 
-  .note-editor {
-    width: 100%;
-  }
 
-  input[type=number] {
+  input {
     padding-left: 0;
     padding-right: 0.1rem;
     margin: 0 0.1rem;
@@ -45,3 +43,14 @@
 
 }
 
+
+.tet-system-settings-panel {
+  .note-editor {
+    width: 100%;
+    font-weight: bold;
+  }
+  input.base-frequency{
+    width: 4rem;
+    text-align: right;
+  }
+}

@@ -1,16 +1,20 @@
 import React, { useRef, useEffect, useCallback } from 'react';
+import classNames from 'classnames';
 
 
-export const NumberInput = ({ initialValue, onBlur, onChange, min, max }: NumberInputProps) => {
+
+export const NumberInput = ({ initialValue, onBlur, onChange, min, max, enableManualEdit, className, type }: NumberInputProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(
     () => {
-      inputRef.current!.addEventListener('keypress', (e) => {
-        e.preventDefault();
-      });
+      if (!(enableManualEdit === undefined || enableManualEdit)) {
+        inputRef.current!.addEventListener('keypress', (e) => {
+          e.preventDefault();
+        });
+      }
     },
-    [inputRef],
+    [inputRef, enableManualEdit],
   );
 
   useEffect(
@@ -20,27 +24,41 @@ export const NumberInput = ({ initialValue, onBlur, onChange, min, max }: Number
     [initialValue, inputRef],
   );
 
+  const getValue = useCallback(
+    () => {
+      const value = +inputRef.current!.value;
+      if (Number.isFinite(value)) {
+        return value;
+      } else {
+        inputRef.current!.value = String(initialValue);
+        return initialValue;
+      }
+    },
+    [initialValue],
+  )
+
   const handleBlur = useCallback(
     () => {
       if (onBlur) {
-        onBlur(inputRef.current!.valueAsNumber);
+        onBlur(getValue());
       }
     },
-    [onBlur, inputRef],
+    [onBlur, getValue],
   );
 
   const handleChange = useCallback(
     () => {
       if (onChange) {
-        onChange(inputRef.current!.valueAsNumber);
+        onChange(getValue());
       }
     },
-    [onChange, inputRef],
+    [onChange, getValue],
   );
 
   return (
     <input
-      type="number"
+      className={classNames('number-input', className)}
+      type={type || 'number'}
       min={min}
       max={max}
       onBlur={handleBlur}
@@ -57,4 +75,7 @@ interface NumberInputProps {
   onChange?: (value: number) => void;
   min?: number;
   max?: number;
+  type?: string;
+  enableManualEdit?: boolean;
+  className?: string;
 }

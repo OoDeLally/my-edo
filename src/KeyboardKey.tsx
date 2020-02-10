@@ -1,13 +1,13 @@
 import classNames from 'classnames';
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { useAudioContext } from './AudioContext';
-import { useEdoContext } from './EdoContext';
+import { useTetContext } from './TetContext';
 import { Oscillator } from './Oscillator';
 
 
 
 export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
-  const { getFrequency, parseNote } = useEdoContext();
+  const { getFrequency, parseNote } = useTetContext();
   const { audioContext, connectNode } = useAudioContext();
   const disconnectNodeRef = useRef<(() => void) | null>(null);
   const oscRef = useRef<Oscillator | null>(null);

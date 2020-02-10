@@ -2,7 +2,8 @@ import React, { ReactNode, useContext, useState, useCallback } from 'react';
 import { useShallowMemoizedObject } from './hooks';
 
 
-const DEFAULT_STARTING_OCTAVE = 3;
+const DEFAULT_START_OCTAVE = 3;
+const DEFAULT_START_RELATIVE_CENT = 0;
 const DEFAULT_RANGE_SIZE = 3;
 
 export const HIGHEST_OCTAVE_NUMBER = 8;
@@ -11,8 +12,10 @@ export const HIGHEST_OCTAVE_NUMBER = 8;
 
 interface KeyboardSettingsContextProps {
   startOctave: number;
-  rangeInOctaves: number;
+  startRelativeCent: number;
+  rangeSize: number;
   setStartOctave: (newStartOctave: number) => void;
+  setStartRelativeCent: (newStartRelativeCent: number) => void;
   setRangeInOctaves: (newRangeInOctaves: number) => void;
 }
 
@@ -26,8 +29,9 @@ export const useKeyboardSettingsContext = () =>
 
 
 export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsContextProviderProps) => {
-  const [startOctave, setStartOctave] = useState(DEFAULT_STARTING_OCTAVE);
+  const [startOctave, setStartOctave] = useState(DEFAULT_START_OCTAVE);
   const [rangeSize, setRangeSize] = useState(DEFAULT_RANGE_SIZE);
+  const [startRelativeCent, setStartRelativeCent] = useState(DEFAULT_START_RELATIVE_CENT);
 
 
   const handleSetStartOctave = useCallback(
@@ -37,6 +41,14 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
     },
     [setStartOctave, setRangeSize, rangeSize],
   );
+
+  const handleSetStartRelativeCent = useCallback(
+    (newStartRelativeCent: number) => {
+      setStartRelativeCent(newStartRelativeCent);
+    },
+    [setStartRelativeCent],
+  );
+
 
   const handleSetRangeInOctaves = useCallback(
     (newRangeSize: number) => {
@@ -48,8 +60,10 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
 
   const contextProps = useShallowMemoizedObject({
     startOctave,
-    rangeInOctaves: rangeSize,
+    startRelativeCent,
+    rangeSize,
     setStartOctave: handleSetStartOctave,
+    setStartRelativeCent: handleSetStartRelativeCent,
     setRangeInOctaves: handleSetRangeInOctaves,
   });
 

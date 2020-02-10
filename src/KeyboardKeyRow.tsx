@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { CENTS_IN_OCTAVE, useEdoContext } from './EdoContext';
+import { CENTS_IN_OCTAVE, useTetContext } from './TetContext';
 import { KeyboardKey } from './KeyboardKey';
 
 import './App.scss';
@@ -8,7 +8,7 @@ import './App.scss';
 
 export const KeyboardKeyRow =
   ({ startOctave, startDegree, rangeInDegree, keyStyleClass, degrees, shift }: KeyboardKeyRowProps) => {
-  const { degreeSizeInCents, getNoteName, parseNote } = useEdoContext();
+  const { degreeSizeInCents, getNoteName, parseNote } = useTetContext();
 
   const keyboardKeys = useMemo(
     () => {
