@@ -10,7 +10,7 @@ export const KeyboardSettingsPanel = () => {
   const { degreeCountPerOctave } = useTetContext();
   const {
     startOctave, rangeSize,
-    setStartOctave, setRangeInOctaves,
+    setStartOctave, setRangeSize,
   } = useKeyboardSettingsContext();
 
 
@@ -26,7 +26,7 @@ export const KeyboardSettingsPanel = () => {
                 min={1}
                 max={HIGHEST_OCTAVE_NUMBER - 1}
                 initialValue={rangeSize}
-                onChange={setRangeInOctaves}
+                onChange={setRangeSize}
               />
               &nbsp;octaves starting from octave #
               <NumberInput

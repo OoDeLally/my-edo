@@ -1,5 +1,3 @@
-@import './index.scss';
-
 
 .keyboard {
   display: flex;
@@ -8,7 +6,6 @@
   justify-content: flex-start;
   align-items: flex-start;
   align-content: space-around;
-  @include disable-selection;
 
   .row {
     display: flex;
@@ -34,6 +31,10 @@
       &:last-child {
         border-bottom-right-radius: 0.5em;
       }
+
+      p {
+        margin: 0.1em;
+      }
     }
 
     .key-half-separator {
@@ -47,12 +48,18 @@
       &.playing {
         box-shadow: 0em 0em 1em grey inset;
       }
+      .subtitle {
+        color: grey;
+      }
     }
     button.note-key.black {
       background: black;
       color: white;
       &.playing {
         box-shadow: 0em 0em 1em grey inset;
+      }
+      .subtitle {
+        color: grey;
       }
     }
   }

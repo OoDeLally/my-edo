@@ -112,8 +112,8 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
       onMouseUp={handleMouseUp}
       onMouseOver={handleMouseOver}
     >
-      <p>{label}</p>
-      <p>{octaveNum}</p>
+      <p className="title">{label}</p>
+      <p className="subtitle">{octaveNum}</p>
     </button>
   );
 };

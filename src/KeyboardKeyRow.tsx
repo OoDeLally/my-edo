@@ -7,19 +7,14 @@ import './App.scss';
 
 
 export const KeyboardKeyRow =
-  ({ startOctave, startDegree, rangeInDegree, keyStyleClass, degrees, shift }: KeyboardKeyRowProps) => {
+  ({ startOctave, rangeSize, keyStyleClass, degrees, extraDegreeCount }: KeyboardKeyRowProps) => {
   const { degreeSizeInCents, getNoteName, parseNote } = useTetContext();
 
   const keyboardKeys = useMemo(
     () => {
       const keys = [];
-      if (shift !== undefined) {
-        for (let i = 0; i < shift; i++) {
-          keys.push(<div key={`start-half-sep-${i}`} className="key-half-separator">&nbsp;</div>);
-        }
-      }
-      const startCent = startOctave * CENTS_IN_OCTAVE + startDegree * degreeSizeInCents;
-      const end = startCent + rangeInDegree * degreeSizeInCents;
+      const startCent = startOctave * CENTS_IN_OCTAVE;
+      const end = startCent + rangeSize * CENTS_IN_OCTAVE + extraDegreeCount * degreeSizeInCents;
       let skippedDegreeCount = 0;
       for (let cent = startCent; cent < end; cent += degreeSizeInCents) {
         const note = getNoteName(cent);
@@ -38,8 +33,8 @@ export const KeyboardKeyRow =
       return keys;
     },
     [
-      degrees, degreeSizeInCents, getNoteName, startOctave, parseNote,
-      startDegree, rangeInDegree, keyStyleClass, shift,
+      startOctave, rangeSize, extraDegreeCount, degreeSizeInCents,
+      getNoteName, parseNote, degrees, keyStyleClass
     ],
   );
 
@@ -53,9 +48,8 @@ export const KeyboardKeyRow =
 
 export interface KeyboardKeyRowProps {
   startOctave: number;
-  startDegree: number;
-  rangeInDegree: number;
+  rangeSize: number; // in number of octaves.
+  extraDegreeCount: number;
   degrees: string[];
   keyStyleClass?: string;
-  shift?: number;
 }

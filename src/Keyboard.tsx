@@ -1,54 +1,49 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { AudioContextProvider } from './AudioContext';
-import { useTetContext } from './TetContext';
+import { useKeyMap } from './hooks';
+
 import { KeyboardKeyRow } from './KeyboardKeyRow';
+import { useKeyboardSettingsContext } from './KeyboardSettingsContext';
 
 import './Keyboard.scss';
 
 
-export const Keyboard = ({ startOctave, rangeInOctaves }: KeyboardProps) => {
-  const { degreeCountPerOctave } = useTetContext();
 
-  const rows = useMemo(
-    () => {
-      return [
-        {
-          name: 'black',
-          startOctave: startOctave,
-          startDegree: 1,
-          rangeInDegree: rangeInOctaves * degreeCountPerOctave,
-          degrees: ['C#', 'D#', 'F#', 'G#', 'A#'],
-          keyStyleClass: 'black',
-          shift: 1,
-        },
-        {
-          name: 'white',
-          startOctave: startOctave,
-          startDegree: 0,
-          rangeInDegree: rangeInOctaves * degreeCountPerOctave + 1,
-          degrees: ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
-          keyStyleClass: 'white',
-        },
-      ];
-    },
-    [startOctave, rangeInOctaves, degreeCountPerOctave],
-  );
+export const Keyboard = () => {
+  const { rowSettings, startOctave, rangeSize } = useKeyboardSettingsContext();
+  const keyMap = useKeyMap(rowSettings);
 
+  const whiteRowSettings = rowSettings[0];
+  const blackRowSettings = rowSettings[1];
 
   return (
     <div className="keyboard">
       <AudioContextProvider>
         {
-          rows.map(({ name, ...rowProps }) => <KeyboardKeyRow key={name} {...rowProps} />)
+          blackRowSettings && (
+            <>
+              <div key="start-half-sep" className="key-half-separator">&nbsp;</div>
+              <KeyboardKeyRow
+                key={keyMap.get(blackRowSettings)}
+                startOctave={startOctave}
+                rangeSize={rangeSize}
+                degrees={blackRowSettings.notes}
+                keyStyleClass='black'
+                extraDegreeCount={0}
+              />
+            </>
+          )
         }
+        <KeyboardKeyRow
+          key={keyMap.get(whiteRowSettings)}
+          startOctave={startOctave}
+          rangeSize={rangeSize}
+          degrees={whiteRowSettings.notes}
+          keyStyleClass='white'
+          extraDegreeCount={1}
+        />
       </AudioContextProvider>
       <p className="info">( Middle-Click: Hold the key )</p>
     </div>
   );
 };
-
-
-interface KeyboardProps {
-  startOctave: number;
-  rangeInOctaves: number;
-}

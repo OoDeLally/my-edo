@@ -4,14 +4,13 @@ import { Keyboard } from './Keyboard';
 
 import './App.scss';
 import { KeyboardSettingsPanel } from './KeyboardSettingsPanel';
-import { KeyboardSettingsContextProvider, useKeyboardSettingsContext } from './KeyboardSettingsContext';
+import { KeyboardSettingsContextProvider } from './KeyboardSettingsContext';
 import { TetSystemSettingsPanel } from './TetSystemSettingsPanel';
 
 
 
 const KeyboardContainer = () => {
   const { degreeCountPerOctave } = useTetContext();
-  const { startOctave, rangeSize } = useKeyboardSettingsContext();
   return (
     <>
       <div className="keyboard-container">
@@ -20,10 +19,7 @@ const KeyboardContainer = () => {
         <KeyboardSettingsPanel />
         {
           degreeCountPerOctave > 0 && (
-            <Keyboard
-              startOctave={startOctave}
-              rangeInOctaves={rangeSize}
-            />
+            <Keyboard/>
           )
         }
         {
