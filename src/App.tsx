@@ -20,6 +20,7 @@ const KeyboardContainer = () => {
           startOctave={startOctave}
           rangeInOctaves={rangeInOctaves}
         />
+        <p>Middle-Click: Hold the key</p>
       </div>
     </>
   );

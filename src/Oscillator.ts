@@ -43,6 +43,6 @@ export class Oscillator {
     );
     setTimeout(() => {
       callback();
-    }, STOP_TRANSITION_DURATION_IN_MS * 10);
+    }, STOP_TRANSITION_DURATION_IN_MS * 4);
   }
 }

@@ -32,7 +32,7 @@ export const AudioContextProvider = ({ children }: AudioContextProviderProps) =>
     () => {
       const node = audioContext.createGain();
       node.connect(audioContext.destination);
-      node.gain.value = 1;
+      node.gain.value = MASTER_GAIN_FACTOR;
       return node;
     },
     [],
@@ -53,7 +53,7 @@ export const AudioContextProvider = ({ children }: AudioContextProviderProps) =>
   const connectGain = useCallback(
     (gainNode: GainNode) => {
       connectionCountRef.current++;
-      updateMasterGain();
+      // updateMasterGain();
       gainNode.connect(masterGainNode);
       return () => {
         gainNode.disconnect();

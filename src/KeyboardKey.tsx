@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { useAudioContext } from './AudioContext';
 import { useEdoContext } from './EdoContext';
 import { Oscillator } from './Oscillator';
@@ -11,7 +11,8 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
   const { audioContext, connectGain } = useAudioContext();
   const disconnectGainRef = useRef<(() => void) | null>(null);
   const oscRef = useRef<Oscillator | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isHeld, setIsHeld] = useState(false);
+  const [oscillatorPlayingCount, setOscillatorPlayingCount] = useState(0);
   const frequency = useMemo(() => getFrequency(note), [getFrequency, note]);
 
 
@@ -21,9 +22,9 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
       disconnectGainRef.current = connectGain(osc.outputNode());
       osc.start();
       oscRef.current = osc;
-      setIsPlaying(true);
+      setOscillatorPlayingCount(val => val + 1);
     },
-    [audioContext, connectGain, setIsPlaying, frequency, oscRef, disconnectGainRef],
+    [audioContext, connectGain, setOscillatorPlayingCount, frequency, oscRef, disconnectGainRef],
   );
   const stop = useCallback(
     () => {
@@ -35,24 +36,61 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
         oscillator.stop(
           () => {
             disconnectGain();
-            setIsPlaying(false);
+            setOscillatorPlayingCount(val => val - 1);
           }
         );
       }
     },
-    [oscRef, disconnectGainRef, setIsPlaying],
+    [oscRef, disconnectGainRef, setOscillatorPlayingCount],
   );
+
+  const toggleHold = useCallback(
+    () => {
+      setIsHeld(val => !val);
+    },
+    [setIsHeld],
+  );
+
+  const handleMouseDown = useCallback(
+    () => {
+      if (!isHeld) {
+        start();
+      }
+    },
+    [isHeld, start],
+  );
+
+
+  const handleMouseUp = useCallback(
+    () => {
+      if (!isHeld) {
+        stop();
+      }
+    },
+    [isHeld, stop],
+  );
+
+  useEffect(() => {
+    if (isHeld) {
+      start();
+    } else {
+      stop();
+    }
+  }, [isHeld, start, stop])
 
   const label = useMemo(
     () => parseNote(note)[0],
     [note, parseNote],
   );
+
+  const isPlaying = oscillatorPlayingCount > 0;
   return (
     <button
       className={classNames('note-key', keyStyleClass, isPlaying && 'playing')}
-      onMouseDown={start}
-      onMouseOut={stop}
-      onMouseUp={stop}
+      onAuxClick={toggleHold}
+      onMouseDown={handleMouseDown}
+      onMouseOut={handleMouseUp}
+      onMouseUp={handleMouseUp}
     >
       {label}
     </button>
