@@ -1,7 +1,9 @@
+import { isEqual } from 'lodash';
 import React, { ReactNode, useCallback, useContext, useState } from 'react';
 
 import { useShallowMemoizedObject } from './hooks';
 import { useTetContext } from './TetContext';
+
 
 
 const DEFAULT_START_OCTAVE = 3;
@@ -30,6 +32,17 @@ interface KeyboardSettingsContextProps {
 const KeyboardSettingsReactContext = React.createContext<KeyboardSettingsContextProps | null>(null);
 
 
+const westernLayout: KeyboardLayout = [['C', 'D', 'E', 'F', 'G', 'A', 'B'], ['C#', 'D#', 'F#', 'G#', 'A#']];
+
+const createInitialLayout = (notes: string[]) => {
+  const allWesternNotes = westernLayout.flat();
+  if (isEqual(notes.sort(), allWesternNotes.sort())) {
+    return westernLayout;
+  } else {
+    return [notes, []] as KeyboardLayout;
+  }
+};
+
 
 export const useKeyboardSettingsContext = () =>
   useContext(KeyboardSettingsReactContext)!;
@@ -40,7 +53,7 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
   const [startOctave, setStartOctave] = useState(DEFAULT_START_OCTAVE);
   const [rangeSize, setRangeSize] = useState(DEFAULT_RANGE_SIZE);
   const [startRelativeCent, setStartRelativeCent] = useState(DEFAULT_START_RELATIVE_CENT);
-  const [layout, setLayout] = useState<KeyboardLayout>([notes, []]);
+  const [layout, setLayout] = useState<KeyboardLayout>(() => createInitialLayout(notes));
 
   const handleSetStartOctave = useCallback(
     (newStartOctave: number) => {
