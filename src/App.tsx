@@ -37,11 +37,11 @@ const KeyboardContainer = () => {
 export default () => {
   return (
     <div className="App">
-      <TetContextProvider>
-        <KeyboardSettingsContextProvider>
-          <KeyboardContainer/>
-        </KeyboardSettingsContextProvider>
-      </TetContextProvider>
+        <TetContextProvider>
+          <KeyboardSettingsContextProvider>
+            <KeyboardContainer/>
+          </KeyboardSettingsContextProvider>
+        </TetContextProvider>
     </div>
   );
 };

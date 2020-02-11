@@ -1,14 +1,13 @@
-import { isEqual, intersection, difference } from 'lodash';
-import React, { ReactNode, useCallback, useContext, useState, useEffect } from 'react';
+import { difference, intersection, isEqual } from 'lodash';
+import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import { NumberParam, useQueryParam } from 'use-query-params';
 
 import { useShallowMemoizedObject } from './hooks';
 import { useTetContext } from './TetContext';
 
 
 
-
 const DEFAULT_START_OCTAVE = 3;
-const DEFAULT_START_RELATIVE_CENT = 0;
 const DEFAULT_RANGE_SIZE = 3;
 
 export const HIGHEST_OCTAVE_NUMBER = 8;
@@ -20,11 +19,9 @@ type KeyboardLayout = [string[], string[]];
 
 interface KeyboardSettingsContextProps {
   startOctave: number;
-  startRelativeCent: number;
   rangeSize: number;
   layout: KeyboardLayout;
   setStartOctave: (newStartOctave: number) => void;
-  setStartRelativeCent: (newStartRelativeCent: number) => void;
   setRangeSize: (newRangeInOctaves: number) => void;
   moveDegreeToOtherRow: (degreeName: string) => void;
 }
@@ -51,9 +48,10 @@ export const useKeyboardSettingsContext = () =>
 
 export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsContextProviderProps) => {
   const { notes } = useTetContext();
-  const [startOctave, setStartOctave] = useState(DEFAULT_START_OCTAVE);
-  const [rangeSize, setRangeSize] = useState(DEFAULT_RANGE_SIZE);
-  const [startRelativeCent, setStartRelativeCent] = useState(DEFAULT_START_RELATIVE_CENT);
+
+  const [startOctave = DEFAULT_START_OCTAVE, setStartOctave] = useQueryParam('startoctave', NumberParam);
+  const [rangeSize = DEFAULT_RANGE_SIZE, setRangeSize] = useQueryParam('rangesize', NumberParam);
+
   const [layout, setLayout] = useState<KeyboardLayout>(() => createInitialLayout(notes));
 
   const handleSetStartOctave = useCallback(
@@ -62,13 +60,6 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
       setRangeSize(Math.min(rangeSize, HIGHEST_OCTAVE_NUMBER - newStartOctave));
     },
     [setStartOctave, setRangeSize, rangeSize],
-  );
-
-  const handleSetStartRelativeCent = useCallback(
-    (newStartRelativeCent: number) => {
-      setStartRelativeCent(newStartRelativeCent);
-    },
-    [setStartRelativeCent],
   );
 
   const handleSetRangeSize = useCallback(
@@ -107,11 +98,9 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
 
   const contextProps = useShallowMemoizedObject({
     startOctave,
-    startRelativeCent,
     rangeSize,
     layout,
     setStartOctave: handleSetStartOctave,
-    setStartRelativeCent: handleSetStartRelativeCent,
     setRangeSize: handleSetRangeSize,
     setLayout,
     moveDegreeToOtherRow,

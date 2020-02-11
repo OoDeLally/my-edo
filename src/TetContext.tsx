@@ -1,6 +1,8 @@
-import React, { ReactNode, useCallback, useContext, useState } from 'react';
+import React, { ReactNode, useCallback, useContext } from 'react';
+import { ArrayParam, NumberParam, useQueryParam } from 'use-query-params';
 
 import { useShallowMemoizedObject } from './hooks';
+
 
 
 export const CENTS_IN_OCTAVE = 1200;
@@ -32,14 +34,14 @@ interface TetContextProps {
 const TetReactContext = React.createContext<TetContextProps | null>(null);
 
 
-
 export const useTetContext = () =>
   useContext(TetReactContext)!;
 
 
+
 export const TetContextProvider = ({ children }: TetContextProviderProps) => {
-  const [baseFrequency, setBaseFrequency] = useState(DEFAUL_BASE_FREQUENCY);
-  const [notes, setNotes] = useState<string[]>(defaultNotes);
+  const [baseFrequency = DEFAUL_BASE_FREQUENCY, setBaseFrequency] = useQueryParam('bf', NumberParam);
+  const [notes = defaultNotes, setNotes] = useQueryParam('notes', ArrayParam);
 
   const degreeSizeInCents = CENTS_IN_OCTAVE / notes.length;
 
