@@ -4,6 +4,7 @@ import { NumberParam, useQueryParam } from 'use-query-params';
 
 import { useShallowMemoizedObject } from './hooks';
 import { useTetContext } from './TetContext';
+import { QUERY_PARAM_START_OCTAVE, QUERY_PARAM_RANGE_SIZE } from './queryParams';
 
 
 
@@ -49,8 +50,8 @@ export const useKeyboardSettingsContext = () =>
 export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsContextProviderProps) => {
   const { notes } = useTetContext();
 
-  const [startOctave = DEFAULT_START_OCTAVE, setStartOctave] = useQueryParam('startoctave', NumberParam);
-  const [rangeSize = DEFAULT_RANGE_SIZE, setRangeSize] = useQueryParam('rangesize', NumberParam);
+  const [startOctave = DEFAULT_START_OCTAVE, setStartOctave] = useQueryParam(QUERY_PARAM_START_OCTAVE, NumberParam);
+  const [rangeSize = DEFAULT_RANGE_SIZE, setRangeSize] = useQueryParam(QUERY_PARAM_RANGE_SIZE, NumberParam);
 
   const [layout, setLayout] = useState<KeyboardLayout>(() => createInitialLayout(notes));
 

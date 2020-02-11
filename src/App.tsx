@@ -3,6 +3,7 @@ import React from 'react';
 import { Keyboard } from './Keyboard';
 import { KeyboardSettingsContextProvider } from './KeyboardSettingsContext';
 import { KeyboardSettingsPanel } from './KeyboardSettingsPanel';
+import { ResetParamsButton } from './ResetParamsButton';
 import { TetContextProvider, useTetContext } from './TetContext';
 import { TetSystemSettingsPanel } from './TetSystemSettingsPanel';
 
@@ -34,14 +35,16 @@ const KeyboardContainer = () => {
 };
 
 
+
 export default () => {
   return (
     <div className="App">
-        <TetContextProvider>
-          <KeyboardSettingsContextProvider>
-            <KeyboardContainer/>
-          </KeyboardSettingsContextProvider>
-        </TetContextProvider>
+      <TetContextProvider>
+        <KeyboardSettingsContextProvider>
+          <KeyboardContainer/>
+        </KeyboardSettingsContextProvider>
+      </TetContextProvider>
+      <ResetParamsButton />
     </div>
   );
 };
