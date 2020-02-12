@@ -6,92 +6,89 @@
   color: #444444;
   height: 100%;
   width: 100%;
-}
 
 
-.keyboard-container {
-  align-content: space-around;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  height: 100%;
-  justify-content: center;
-  width: 100%;
+  .keyboard-container {
+    align-content: space-around;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    height: 100%;
+    justify-content: center;
+    width: 100%;
 
-}
-
-
-h1 {
-  margin: .5rem;
-}
-
-h2 {
-  font-size: .5rem;
-  margin: .5rem;
-}
-
-
-button.reset {
-  margin-left: 1rem;
-  vertical-align: center;
-}
-
-
-.keyboard-settings-panel, .tet-system-settings-panel {
-  margin: .5em;
-
-  label {
-    display: block;
-  }
-
-  input {
-    border: 1px solid lightgrey;
-    border-radius: .2rem;
-    color: #444444;
-    padding: .5rem;
   }
 
 
-  input {
-    margin: 0 .1rem;
-    padding-left: 0;
-    padding-right: .1rem;
+  h1 {
+    margin: .5rem;
+  }
+
+  h2 {
+    font-size: .5rem;
+    margin: .5rem;
+  }
+
+
+  button.reset {
+    margin-left: 1rem;
+    vertical-align: center;
+  }
+
+
+  .keyboard-settings-panel, .tet-system-settings-panel {
+    margin: .5em;
+
+    label {
+      display: block;
+    }
+
+    input {
+      border: 1px solid lightgrey;
+      border-radius: .2rem;
+      color: #444444;
+      margin: 0 .1rem;
+      padding: .5rem;
+      padding-left: 0;
+      padding-right: .1rem;
+      text-align: center;
+
+      &:hover {
+        background: #fafafa;
+      }
+
+      &.number {
+        width: 3em;
+      }
+    }
+
+    p {
+      margin: .5em;
+    }
+
+  }
+
+  .keyboard-settings-panel {
+    margin-bottom: 2rem;
+  }
+
+
+  .tet-system-settings-panel {
     text-align: center;
 
-    &:hover {
-      background: #fafafa;
+    .note-editor {
+      font-weight: bold;
+      width: 20rem;
+      word-spacing: .5em;
     }
 
-    &.number {
-      width: 3em;
+    input.base-frequency {
+      font-size: 1rem;
+      font-weight: bold;
+      text-align: right;
+      width: 4rem;
     }
   }
 
-  p {
-    margin: .5em;
-  }
-
-}
-
-.keyboard-settings-panel {
-  margin-bottom: 2rem;
-}
-
-
-.tet-system-settings-panel {
-  text-align: center;
-
-  .note-editor {
-    font-weight: bold;
-    width: 20rem;
-    word-spacing: .5em;
-  }
-
-  input.base-frequency {
-    font-size: 1rem;
-    font-weight: bold;
-    text-align: right;
-    width: 4rem;
-  }
 }

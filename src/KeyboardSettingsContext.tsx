@@ -1,6 +1,6 @@
 import { difference, intersection, isEqual } from 'lodash';
 import React, { ReactNode, useCallback, useContext, useEffect, useRef, useMemo, SetStateAction } from 'react';
-import { NumberParam, useQueryParam, ArrayParam } from 'use-query-params';
+import { NumberParam, useQueryParam, ArrayParam, useQueryParams } from 'use-query-params';
 
 import { useShallowMemoizedObject, isFunction } from './hooks';
 import { useTetContext } from './TetContext';
@@ -56,13 +56,18 @@ export const useKeyboardSettingsContext = () =>
 const useLayoutQueryParam = (initialValue: () => KeyboardLayout) => {
   const memoizedInitialValue = useRef(initialValue).current;
   const [
-    layoutWhite = westernLayout[0],
-    setLayoutWhite,
-  ] = useQueryParam(QUERY_PARAM_KEYBOARD_LAYOUT_WHITE, ArrayParam);
-  const [
-    layoutBlack = westernLayout[1],
-    setLayoutBlack,
-  ] = useQueryParam(QUERY_PARAM_KEYBOARD_LAYOUT_BLACK, ArrayParam);
+    {
+      [QUERY_PARAM_KEYBOARD_LAYOUT_WHITE]: layoutWhiteParam,
+      [QUERY_PARAM_KEYBOARD_LAYOUT_BLACK]: layoutBlackParam,
+    },
+    setQuery,
+  ] = useQueryParams({
+    [QUERY_PARAM_KEYBOARD_LAYOUT_WHITE]: ArrayParam,
+    [QUERY_PARAM_KEYBOARD_LAYOUT_BLACK]: ArrayParam,
+  });
+  const isLayoutSetInParams = Boolean(layoutWhiteParam || layoutBlackParam);
+  const layoutWhite = isLayoutSetInParams ? (layoutWhiteParam || []) : westernLayout[0];
+  const layoutBlack = isLayoutSetInParams ? (layoutBlackParam || []) : westernLayout[1];
   const layout: KeyboardLayout = useMemo(
     () => (layoutWhite && layoutBlack && [[...layoutWhite], [...layoutBlack]]) || memoizedInitialValue(),
     [layoutBlack, layoutWhite, memoizedInitialValue],
@@ -73,18 +78,20 @@ const useLayoutQueryParam = (initialValue: () => KeyboardLayout) => {
       (layoutSetter: SetStateAction<KeyboardLayout | undefined>) => {
         const newLayout = isFunction(layoutSetter) ? layoutSetter(layout) : layoutSetter;
         if (newLayout === undefined) {
-          setLayoutWhite(undefined);
-          setLayoutBlack(undefined);
+          setQuery({
+            [QUERY_PARAM_KEYBOARD_LAYOUT_WHITE]: undefined,
+            [QUERY_PARAM_KEYBOARD_LAYOUT_BLACK]: undefined,
+          });
           return;
         }
-        if (!isEqual(newLayout[0], layout[0])) {
-          setLayoutWhite(newLayout && newLayout[0]);
-        }
-        if (!isEqual(newLayout[1], layout[1])) {
-          setLayoutBlack(newLayout && newLayout[1]);
+        if (!isEqual(newLayout[0], layout[0]) || !isEqual(newLayout[1], layout[1])) {
+          setQuery({
+            [QUERY_PARAM_KEYBOARD_LAYOUT_WHITE]: newLayout[0],
+            [QUERY_PARAM_KEYBOARD_LAYOUT_BLACK]: newLayout[1],
+          });
         }
       },
-      [setLayoutWhite, setLayoutBlack, layout],
+      [setQuery, layout],
     ),
   ] as const;
 };
