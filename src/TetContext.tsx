@@ -1,8 +1,9 @@
-import React, { ReactNode, useCallback, useContext } from 'react';
+import React, { ReactNode, useCallback, useContext, useRef } from 'react';
 import { ArrayParam, NumberParam, useQueryParam } from 'use-query-params';
 
 import { useShallowMemoizedObject } from './hooks';
 import { QUERY_PARAM_BASE_FREQUENCY, QUERY_PARAM_NOTES } from './queryParams';
+import { isEqual } from 'lodash';
 
 
 
@@ -11,9 +12,10 @@ export const DEFAUL_BASE_FREQUENCY = 16.35; // C0
 export const INTERCENT_FACTOR = Math.pow(2, 1 / CENTS_IN_OCTAVE);
 
 
-const defaultNotes = [
+const DEFAULT_NOTES = [
   'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'
 ];
+const EMPTY_NOTES: string[] = [];
 
 
 interface TetContextProps {
@@ -21,6 +23,7 @@ interface TetContextProps {
   notes: string[];
   degreeCountPerOctave: number;
   degreeSizeInCents: number;
+  touched: boolean;
   setBaseFrequency: (baseFrequency: number) => void;
   setNotes: (notes: string[]) => void;
   getNoteName: (cents: number) => string;
@@ -29,6 +32,7 @@ interface TetContextProps {
   parseNote: (note: string) => readonly [string, number, number];
   getCent: (note: string) => number;
   getFrequency: (note: string) => number;
+  reset: () => void;
 }
 
 
@@ -39,12 +43,34 @@ export const useTetContext = () =>
   useContext(TetReactContext)!;
 
 
-
 export const TetContextProvider = ({ children }: TetContextProviderProps) => {
-  const [baseFrequency = DEFAUL_BASE_FREQUENCY, setBaseFrequency] = useQueryParam(QUERY_PARAM_BASE_FREQUENCY, NumberParam);
-  const [notes = defaultNotes, setNotes] = useQueryParam(QUERY_PARAM_NOTES, ArrayParam);
+  const [
+    baseFrequency = DEFAUL_BASE_FREQUENCY,
+    setBaseFrequency,
+  ] = useQueryParam(QUERY_PARAM_BASE_FREQUENCY, NumberParam);
+  const [notesParam, setNotes] = useQueryParam(QUERY_PARAM_NOTES, ArrayParam);
+  const touchedRef = useRef(false);
+  const notes = notesParam || (touchedRef.current ? EMPTY_NOTES : DEFAULT_NOTES);
 
   const degreeSizeInCents = CENTS_IN_OCTAVE / notes.length;
+
+  const handleSetNotes = useCallback(
+    (newNotes: string[]) => {
+      if (!isEqual(newNotes, notes)) {
+        touchedRef.current = true;
+        setNotes(newNotes);
+      }
+    },
+    [setNotes, notes],
+  );
+
+  const handleSetBaseFrequency = useCallback(
+    (frequency: number) => {
+      touchedRef.current = true;
+      setBaseFrequency(frequency);
+    },
+    [setBaseFrequency],
+  );
 
   const getNoteName = useCallback(
     (cents: number) => {
@@ -91,17 +117,28 @@ export const TetContextProvider = ({ children }: TetContextProviderProps) => {
     [getCent, baseFrequency],
   );
 
+  const reset = useCallback(
+    () => {
+      touchedRef.current = false;
+      setNotes(undefined);
+      setBaseFrequency(undefined);
+    },
+    [setNotes, setBaseFrequency],
+  );
+
   const contextProps = useShallowMemoizedObject({
     notes,
-    setNotes,
+    setNotes: handleSetNotes,
     baseFrequency,
-    setBaseFrequency,
+    setBaseFrequency: handleSetBaseFrequency,
     degreeCountPerOctave: notes.length,
     degreeSizeInCents,
     getNoteName,
     parseNote,
     getCent,
     getFrequency,
+    reset,
+    touched: touchedRef.current,
   });
 
   return (

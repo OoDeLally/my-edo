@@ -42,9 +42,9 @@ export default () => {
       <TetContextProvider>
         <KeyboardSettingsContextProvider>
           <KeyboardContainer/>
+          <ResetParamsButton />
         </KeyboardSettingsContextProvider>
       </TetContextProvider>
-      <ResetParamsButton />
     </div>
   );
 };

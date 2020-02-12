@@ -236,3 +236,30 @@ export const useKeyMap = <T>(array: T[]): Map<T, string> => {
     [array],
   );
 };
+
+
+
+
+
+export const useDebounce = (delayInMs: number): ((callback: () => void) => void) => {
+  const [callback, setCallback] = useState<(() => void) | null>(null);
+  useEffect(
+    () => {
+      if (!callback) {
+        return;
+      }
+      const handler = setTimeout(callback, delayInMs);
+      return () => {
+        clearTimeout(handler);
+      };
+    },
+    [callback, delayInMs],
+  );
+  return useCallback(
+    (callbackToDebounce: () => void) => {
+      // Recreate a new function to update the state even if the argument is the same.
+      setCallback(() => () => callbackToDebounce());
+    },
+    [setCallback],
+  );
+};

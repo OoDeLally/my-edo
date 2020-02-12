@@ -1,23 +1,40 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef, useEffect } from 'react';
 
 import { NumberInput } from './NumberInput';
 import { useTetContext } from './TetContext';
-import { uniq } from 'lodash';
+import { uniq, isEqual } from 'lodash';
+import { useDebounce } from './hooks';
 
 
+const notesFieldValueToNotes = (inputStr: string) =>
+  uniq(inputStr.split(' ').filter(str => str));
 
 
 export const TetSystemSettingsPanel = () => {
   const noteInputRef = useRef<HTMLInputElement>(null);
   const { notes, setNotes, degreeCountPerOctave, baseFrequency, setBaseFrequency, degreeSizeInCents } = useTetContext();
   const noteFieldValue = useMemo(() => notes.join(' '), [notes]);
+  const noteEditDebounce = useDebounce(300);
+
+  const getNotesFromInput = useCallback(
+    () => notesFieldValueToNotes(noteInputRef.current!.value),
+    [],
+  );
 
   const handleNoteChange = useCallback(
     () => {
-      setNotes(uniq(noteInputRef.current!.value.split(' ').filter(str => str)));
+      noteEditDebounce(
+        () => setNotes(getNotesFromInput())
+      );
     },
-    [noteInputRef, setNotes],
+    [getNotesFromInput, setNotes, noteEditDebounce],
   );
+
+  useEffect(() => {
+    if (!isEqual(notes, getNotesFromInput())) {
+      noteInputRef.current!.value = notes.join(' ');
+    }
+  }, [notes, getNotesFromInput]);
 
   return (
     <div className="tet-system-settings-panel">

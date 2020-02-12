@@ -1,10 +1,13 @@
 import { difference, intersection, isEqual } from 'lodash';
-import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react';
-import { NumberParam, useQueryParam } from 'use-query-params';
+import React, { ReactNode, useCallback, useContext, useEffect, useRef, useMemo, SetStateAction } from 'react';
+import { NumberParam, useQueryParam, ArrayParam } from 'use-query-params';
 
-import { useShallowMemoizedObject } from './hooks';
+import { useShallowMemoizedObject, isFunction } from './hooks';
 import { useTetContext } from './TetContext';
-import { QUERY_PARAM_START_OCTAVE, QUERY_PARAM_RANGE_SIZE } from './queryParams';
+import {
+  QUERY_PARAM_START_OCTAVE, QUERY_PARAM_RANGE_SIZE,
+  QUERY_PARAM_KEYBOARD_LAYOUT_WHITE, QUERY_PARAM_KEYBOARD_LAYOUT_BLACK
+} from './queryParams';
 
 
 
@@ -22,9 +25,11 @@ interface KeyboardSettingsContextProps {
   startOctave: number;
   rangeSize: number;
   layout: KeyboardLayout;
+  touched: boolean;
   setStartOctave: (newStartOctave: number) => void;
   setRangeSize: (newRangeInOctaves: number) => void;
   moveDegreeToOtherRow: (degreeName: string) => void;
+  reset: () => void;
 }
 
 
@@ -47,16 +52,63 @@ export const useKeyboardSettingsContext = () =>
   useContext(KeyboardSettingsReactContext)!;
 
 
+
+const useLayoutQueryParam = (initialValue: () => KeyboardLayout) => {
+  const memoizedInitialValue = useRef(initialValue).current;
+  const [
+    layoutWhite = westernLayout[0],
+    setLayoutWhite,
+  ] = useQueryParam(QUERY_PARAM_KEYBOARD_LAYOUT_WHITE, ArrayParam);
+  const [
+    layoutBlack = westernLayout[1],
+    setLayoutBlack,
+  ] = useQueryParam(QUERY_PARAM_KEYBOARD_LAYOUT_BLACK, ArrayParam);
+  const layout: KeyboardLayout = useMemo(
+    () => (layoutWhite && layoutBlack && [[...layoutWhite], [...layoutBlack]]) || memoizedInitialValue(),
+    [layoutBlack, layoutWhite, memoizedInitialValue],
+  );
+  return [
+    layout,
+    useCallback(
+      (layoutSetter: SetStateAction<KeyboardLayout | undefined>) => {
+        const newLayout = isFunction(layoutSetter) ? layoutSetter(layout) : layoutSetter;
+        if (newLayout === undefined) {
+          setLayoutWhite(undefined);
+          setLayoutBlack(undefined);
+          return;
+        }
+        if (!isEqual(newLayout[0], layout[0])) {
+          setLayoutWhite(newLayout && newLayout[0]);
+        }
+        if (!isEqual(newLayout[1], layout[1])) {
+          setLayoutBlack(newLayout && newLayout[1]);
+        }
+      },
+      [setLayoutWhite, setLayoutBlack, layout],
+    ),
+  ] as const;
+};
+
+
 export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsContextProviderProps) => {
   const { notes } = useTetContext();
 
   const [startOctave = DEFAULT_START_OCTAVE, setStartOctave] = useQueryParam(QUERY_PARAM_START_OCTAVE, NumberParam);
   const [rangeSize = DEFAULT_RANGE_SIZE, setRangeSize] = useQueryParam(QUERY_PARAM_RANGE_SIZE, NumberParam);
+  const touchedRef = useRef(false);
+  const [layout, setLayout] = useLayoutQueryParam(() => createInitialLayout(notes));
 
-  const [layout, setLayout] = useState<KeyboardLayout>(() => createInitialLayout(notes));
+  const handleSetLayout = useCallback(
+    (newLayout: SetStateAction<KeyboardLayout | undefined>) => {
+      touchedRef.current = true;
+      setLayout(newLayout);
+    },
+    [setLayout],
+  );
 
   const handleSetStartOctave = useCallback(
     (newStartOctave: number) => {
+      touchedRef.current = true;
       setStartOctave(newStartOctave);
       setRangeSize(Math.min(rangeSize, HIGHEST_OCTAVE_NUMBER - newStartOctave));
     },
@@ -65,6 +117,7 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
 
   const handleSetRangeSize = useCallback(
     (newRangeSize: number) => {
+      touchedRef.current = true;
       setRangeSize(newRangeSize);
       setStartOctave(Math.min(startOctave, HIGHEST_OCTAVE_NUMBER - newRangeSize));
     },
@@ -74,10 +127,15 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
   const moveDegreeToOtherRow = useCallback(
     (degreeName: string) => {
       setLayout(
-        ([whiteNotes, blackNotes]) =>
-          whiteNotes.includes(degreeName)
+        (currentLayout) => {
+          if (!currentLayout) {
+            return currentLayout;
+          }
+          const [whiteNotes, blackNotes] = currentLayout!;
+          return whiteNotes.includes(degreeName)
             ? [whiteNotes.filter(note => note !== degreeName), [...blackNotes, degreeName]]
-            : [[...whiteNotes, degreeName], blackNotes.filter(note => note !== degreeName)]
+            : [[...whiteNotes, degreeName], blackNotes.filter(note => note !== degreeName)];
+        }
       );
     },
     [setLayout],
@@ -86,15 +144,30 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
   useEffect(
     () => {
       setLayout(
-        ([whiteNotes, blackNotes]) => {
+        (currentLayout) => {
+          if (!currentLayout) {
+            return currentLayout;
+          }
+          const [whiteNotes, blackNotes] = currentLayout;
           const newWhiteNode = intersection(whiteNotes, notes);
           const newBlackNode = intersection(blackNotes, notes);
           const unknownNotes = difference(notes, newWhiteNode, newBlackNode);
-          return [[...newWhiteNode, ...unknownNotes], newBlackNode] as KeyboardLayout;
+          const newLayout = [[...newWhiteNode, ...unknownNotes], newBlackNode] as KeyboardLayout;
+          return isEqual(newLayout, currentLayout) ? currentLayout : newLayout;
         }
       );
     },
-    [notes],
+    [notes, setLayout],
+  );
+
+  const reset = useCallback(
+    () => {
+      setStartOctave(undefined);
+      setRangeSize(undefined);
+      setLayout(undefined);
+      touchedRef.current = false;
+    },
+    [setRangeSize, setStartOctave, setLayout],
   );
 
   const contextProps = useShallowMemoizedObject({
@@ -103,8 +176,10 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
     layout,
     setStartOctave: handleSetStartOctave,
     setRangeSize: handleSetRangeSize,
-    setLayout,
+    setLayout: handleSetLayout,
     moveDegreeToOtherRow,
+    reset,
+    touched: touchedRef.current,
   });
 
   return (
