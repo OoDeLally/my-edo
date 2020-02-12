@@ -16,7 +16,10 @@ const KeyboardContainer = () => {
   return (
     <>
       <div className="keyboard-container">
-        <h1>My {degreeCountPerOctave}-TET system</h1>
+        <h1>
+          My {degreeCountPerOctave}-TET system
+          <ResetParamsButton />
+        </h1>
         <TetSystemSettingsPanel />
         <KeyboardSettingsPanel />
         {
@@ -38,11 +41,10 @@ const KeyboardContainer = () => {
 
 export default () => {
   return (
-    <div className="App">
+    <div className="app">
       <TetContextProvider>
         <KeyboardSettingsContextProvider>
           <KeyboardContainer/>
-          <ResetParamsButton />
         </KeyboardSettingsContextProvider>
       </TetContextProvider>
     </div>

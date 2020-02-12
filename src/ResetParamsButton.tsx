@@ -6,8 +6,8 @@ import { useTetContext } from './TetContext';
 
 
 export const ResetParamsButton = () => {
-  const { touched: tetTouched, reset: resetTet } = useTetContext();
-  const { touched: keyboardTouched, reset: resetKeyboard } = useKeyboardSettingsContext();
+  const { reset: resetTet } = useTetContext();
+  const { reset: resetKeyboard } = useKeyboardSettingsContext();
 
   const reset = useCallback(
     () => {
@@ -17,11 +17,7 @@ export const ResetParamsButton = () => {
     [resetTet, resetKeyboard],
   );
 
-  if (!tetTouched && !keyboardTouched) {
-    return null;
-  }
-
   return (
-    <button onClick={reset}>Reset</button>
+    <button className="reset" onClick={reset}>↺</button>
   );
 };
