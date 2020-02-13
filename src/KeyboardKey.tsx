@@ -17,8 +17,8 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
   const disconnectNodeRef = useRef<(() => void) | null>(null);
   const oscRef = useRef<Oscillator | null>(null);
   const [isHeld, setIsHeld] = useState(false);
-  const [oscillatorPlayingCount, setOscillatorPlayingCount] = useState(0);
   const frequency = useMemo(() => getFrequency(note), [getFrequency, note]);
+  const [isPlaying, setIsPlaying] = useState(false);
 
 
   const start = useCallback(
@@ -27,9 +27,9 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
       disconnectNodeRef.current = connectNode(osc.outputNode());
       osc.start();
       oscRef.current = osc;
-      setOscillatorPlayingCount(val => val + 1);
+      setIsPlaying(true);
     },
-    [audioContext, connectNode, setOscillatorPlayingCount, frequency, oscRef, disconnectNodeRef],
+    [audioContext, connectNode, frequency],
   );
   const stop = useCallback(
     () => {
@@ -38,17 +38,17 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
       if (oscillator) {
         const disconnectGain = disconnectNodeRef.current!;
         disconnectNodeRef.current = null;
+        setIsPlaying(false);
         oscillator.stop(
           () => {
             if (isComponentMountedRef.current) {
               disconnectGain();
-              setOscillatorPlayingCount(val => val - 1);
             }
           }
         );
       }
     },
-    [oscRef, disconnectNodeRef, setOscillatorPlayingCount, isComponentMountedRef],
+    [isComponentMountedRef],
   );
 
   const degreeName = useMemo(
@@ -118,7 +118,6 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
     [note, parseNote],
   );
 
-  const isPlaying = oscillatorPlayingCount > 0;
   return (
     <button
       className={classNames('note-key', keyStyleClass, isPlaying && 'playing')}
