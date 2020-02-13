@@ -65,7 +65,6 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
       }
       const isRightClick = event.buttons === 2;
       if (isRightClick) {
-        stop();
         moveDegreeToOtherRow(degreeName);
         return;
       }
@@ -76,7 +75,7 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
         }
       }
     },
-    [isHeld, stop, moveDegreeToOtherRow, degreeName, start],
+    [isHeld, moveDegreeToOtherRow, degreeName, start],
   );
 
 
@@ -116,6 +115,13 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
       stop();
     }
   }, [isHeld, start, stop]);
+
+
+  useEffect(() => {
+    return () => {
+      stop(); // Stop on unmount
+    };
+  }, [stop]);
 
 
   const octaveNum = useMemo(
