@@ -1,3 +1,3 @@
 ## Make your own TET system!
 
-https://my-12-tet-system.herokuapp.com/
+https://my-tet-system.herokuapp.com/
