@@ -1,5 +1,5 @@
 import { difference, intersection, isEqual } from 'lodash';
-import React, { ReactNode, useCallback, useContext, useEffect, useRef, useMemo, SetStateAction } from 'react';
+import React, { ReactNode, useCallback, useContext, useEffect, useRef, useMemo, SetStateAction, useState } from 'react';
 import { NumberParam, useQueryParam, ArrayParam, useQueryParams } from 'use-query-params';
 
 import { useShallowMemoizedObject, isFunction } from './hooks';
@@ -26,6 +26,7 @@ interface KeyboardSettingsContextProps {
   rangeSize: number;
   layout: KeyboardLayout;
   touched: boolean;
+  resetCount: number;
   setStartOctave: (newStartOctave: number) => void;
   setRangeSize: (newRangeInOctaves: number) => void;
   moveDegreeToOtherRow: (degreeName: string) => void;
@@ -102,12 +103,13 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
 
   const [startOctave = DEFAULT_START_OCTAVE, setStartOctave] = useQueryParam(QUERY_PARAM_START_OCTAVE, NumberParam);
   const [rangeSize = DEFAULT_RANGE_SIZE, setRangeSize] = useQueryParam(QUERY_PARAM_RANGE_SIZE, NumberParam);
-  const touchedRef = useRef(false);
+  const [touched, setTouched] = useState(false);
+  const [resetCount, setResetCount] = useState(0);
   const [layout, setLayout] = useLayoutQueryParam(() => createInitialLayout(notes));
 
   const handleSetLayout = useCallback(
     (newLayout: SetStateAction<KeyboardLayout | undefined>) => {
-      touchedRef.current = true;
+      setTouched(true);
       setLayout(newLayout);
     },
     [setLayout],
@@ -115,7 +117,7 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
 
   const handleSetStartOctave = useCallback(
     (newStartOctave: number) => {
-      touchedRef.current = true;
+      setTouched(true);
       setStartOctave(newStartOctave);
       setRangeSize(Math.min(rangeSize, HIGHEST_OCTAVE_NUMBER - newStartOctave));
     },
@@ -124,7 +126,7 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
 
   const handleSetRangeSize = useCallback(
     (newRangeSize: number) => {
-      touchedRef.current = true;
+      setTouched(true);
       setRangeSize(newRangeSize);
       setStartOctave(Math.min(startOctave, HIGHEST_OCTAVE_NUMBER - newRangeSize));
     },
@@ -172,21 +174,22 @@ export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsCo
       setStartOctave(undefined);
       setRangeSize(undefined);
       setLayout(undefined);
-      touchedRef.current = false;
+      setTouched(false);
+      setResetCount(val => val + 1);
     },
-    [setRangeSize, setStartOctave, setLayout],
+    [setLayout, setRangeSize, setStartOctave],
   );
-
   const contextProps = useShallowMemoizedObject({
     startOctave,
     rangeSize,
     layout,
+    resetCount,
     setStartOctave: handleSetStartOctave,
     setRangeSize: handleSetRangeSize,
     setLayout: handleSetLayout,
     moveDegreeToOtherRow,
     reset,
-    touched: touchedRef.current,
+    touched,
   });
 
   return (

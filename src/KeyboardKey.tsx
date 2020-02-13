@@ -12,7 +12,7 @@ import { useTetContext } from './TetContext';
 export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
   const isComponentMountedRef = useIsComponentMounted();
   const { getFrequency, parseNote } = useTetContext();
-  const { moveDegreeToOtherRow } = useKeyboardSettingsContext();
+  const { moveDegreeToOtherRow, resetCount } = useKeyboardSettingsContext();
   const { audioContext, connectNode } = useAudioContext();
   const disconnectNodeRef = useRef<(() => void) | null>(null);
   const oscRef = useRef<Oscillator | null>(null);
@@ -65,6 +65,7 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
       }
       const isRightClick = event.buttons === 2;
       if (isRightClick) {
+        stop();
         moveDegreeToOtherRow(degreeName);
         return;
       }
@@ -75,7 +76,7 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
         }
       }
     },
-    [isHeld, start, setIsHeld, moveDegreeToOtherRow, degreeName],
+    [isHeld, stop, moveDegreeToOtherRow, degreeName, start],
   );
 
 
@@ -102,6 +103,10 @@ export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
     [isHeld, start],
   );
 
+
+  useEffect(() => {
+    stop();
+  }, [stop, resetCount]);
 
 
   useEffect(() => {
