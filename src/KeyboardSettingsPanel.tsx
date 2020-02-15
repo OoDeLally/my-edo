@@ -2,13 +2,13 @@ import React from 'react';
 
 import { HIGHEST_OCTAVE_NUMBER, useKeyboardSettingsContext } from './KeyboardSettingsContext';
 import { NumberInput } from './NumberInput';
-import { useTetContext } from './TetContext';
+import { useEtContext } from './EtContext';
 
 
 
 
 export const KeyboardSettingsPanel = () => {
-  const { degreeCountPerOctave } = useTetContext();
+  const { degreeCountPerOctave } = useEtContext();
   const {
     startOctave, rangeSize,
     setStartOctave, setRangeSize,

@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, { useMemo } from 'react';
 
 import { KeyboardKey } from './KeyboardKey';
-import { CENTS_IN_OCTAVE, useTetContext } from './TetContext';
+import { CENTS_IN_OCTAVE, useEtContext } from './EtContext';
 
 import './App.scss';
 
@@ -10,7 +10,7 @@ import './App.scss';
 
 export const KeyboardKeyRow =
   ({ startOctave, rangeSize, keyStyleClass, degrees, extraDegreeCount, shift, className }: KeyboardKeyRowProps) => {
-  const { degreeSizeInCents, getNoteName, parseNote } = useTetContext();
+  const { degreeSizeInCents, getNoteName, parseNote } = useEtContext();
 
   const keyboardKeys = useMemo(
     () => {

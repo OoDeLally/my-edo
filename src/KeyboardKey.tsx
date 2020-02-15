@@ -5,13 +5,13 @@ import { useAudioContext } from './AudioContext';
 import { useIsComponentMounted } from './hooks';
 import { useKeyboardSettingsContext } from './KeyboardSettingsContext';
 import { Oscillator } from './Oscillator';
-import { useTetContext } from './TetContext';
+import { useEtContext } from './EtContext';
 
 
 
 export const KeyboardKey = ({ note, keyStyleClass }: NoteKeyProps) => {
   const isComponentMountedRef = useIsComponentMounted();
-  const { getFrequency, parseNote } = useTetContext();
+  const { getFrequency, parseNote } = useEtContext();
   const { moveDegreeToOtherRow, resetCount } = useKeyboardSettingsContext();
   const { audioContext, connectNode } = useAudioContext();
   const disconnectNodeRef = useRef<(() => void) | null>(null);

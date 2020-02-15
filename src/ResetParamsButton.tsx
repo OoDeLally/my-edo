@@ -1,20 +1,20 @@
 import React, { useCallback } from 'react';
 
 import { useKeyboardSettingsContext } from './KeyboardSettingsContext';
-import { useTetContext } from './TetContext';
+import { useEtContext } from './EtContext';
 
 
 
 export const ResetParamsButton = () => {
-  const { reset: resetTet } = useTetContext();
+  const { reset: resetEt } = useEtContext();
   const { reset: resetKeyboard } = useKeyboardSettingsContext();
 
   const reset = useCallback(
     () => {
-      resetTet();
+      resetEt();
       resetKeyboard();
     },
-    [resetTet, resetKeyboard],
+    [resetEt, resetKeyboard],
   );
 
   return (

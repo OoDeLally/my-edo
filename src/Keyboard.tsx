@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { AudioContextProvider } from './AudioContext';
 import { KeyboardKeyRow } from './KeyboardKeyRow';
 import { useKeyboardSettingsContext } from './KeyboardSettingsContext';
-import { useTetContext } from './TetContext';
+import { useEtContext } from './EtContext';
 
 import './Keyboard.scss';
 
@@ -11,7 +11,7 @@ import './Keyboard.scss';
 
 
 export const Keyboard = () => {
-  const { notes } = useTetContext();
+  const { notes } = useEtContext();
   const { layout: [whiteNotes, blackNotes], startOctave, rangeSize } = useKeyboardSettingsContext();
   const firstNote = notes[0];
   const whiteRowShift = whiteNotes.includes(firstNote) ? 0 : 1;

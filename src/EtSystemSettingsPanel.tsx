@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useRef, useEffect } from 'react';
 
 import { NumberInput } from './NumberInput';
-import { useTetContext } from './TetContext';
+import { useEtContext } from './EtContext';
 import { uniq, isEqual } from 'lodash';
 import { useDebounce } from './hooks';
 
@@ -10,9 +10,9 @@ const notesFieldValueToNotes = (inputStr: string) =>
   uniq(inputStr.split(' ').filter(str => str));
 
 
-export const TetSystemSettingsPanel = () => {
+export const EtSystemSettingsPanel = () => {
   const noteInputRef = useRef<HTMLInputElement>(null);
-  const { notes, setNotes, degreeCountPerOctave, baseFrequency, setBaseFrequency, degreeSizeInCents } = useTetContext();
+  const { notes, setNotes, degreeCountPerOctave, baseFrequency, setBaseFrequency, degreeSizeInCents } = useEtContext();
   const noteFieldValue = useMemo(() => notes.join(' '), [notes]);
   const noteEditDebounce = useDebounce(300);
 
@@ -37,7 +37,7 @@ export const TetSystemSettingsPanel = () => {
   }, [notes, getNotesFromInput]);
 
   return (
-    <div className="tet-system-settings-panel">
+    <div className="et-system-settings-panel">
       <p>My notes are named</p>
 
       <p>

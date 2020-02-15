@@ -3,7 +3,7 @@ import React, { ReactNode, useCallback, useContext, useEffect, useRef, useMemo, 
 import { NumberParam, useQueryParam, ArrayParam, useQueryParams } from 'use-query-params';
 
 import { useShallowMemoizedObject, isFunction } from './hooks';
-import { useTetContext } from './TetContext';
+import { useEtContext } from './EtContext';
 import {
   QUERY_PARAM_START_OCTAVE, QUERY_PARAM_RANGE_SIZE,
   QUERY_PARAM_KEYBOARD_LAYOUT_WHITE, QUERY_PARAM_KEYBOARD_LAYOUT_BLACK
@@ -99,7 +99,7 @@ const useLayoutQueryParam = (initialValue: () => KeyboardLayout) => {
 
 
 export const KeyboardSettingsContextProvider = ({ children }: KeyboardSettingsContextProviderProps) => {
-  const { notes } = useTetContext();
+  const { notes } = useEtContext();
 
   const [startOctave = DEFAULT_START_OCTAVE, setStartOctave] = useQueryParam(QUERY_PARAM_START_OCTAVE, NumberParam);
   const [rangeSize = DEFAULT_RANGE_SIZE, setRangeSize] = useQueryParam(QUERY_PARAM_RANGE_SIZE, NumberParam);

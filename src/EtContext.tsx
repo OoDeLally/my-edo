@@ -18,7 +18,7 @@ const DEFAULT_NOTES = [
 const EMPTY_NOTES: string[] = [];
 
 
-interface TetContextProps {
+interface EtContextProps {
   baseFrequency: number;
   notes: string[];
   degreeCountPerOctave: number;
@@ -36,14 +36,14 @@ interface TetContextProps {
 }
 
 
-const TetReactContext = React.createContext<TetContextProps | null>(null);
+const EtReactContext = React.createContext<EtContextProps | null>(null);
 
 
-export const useTetContext = () =>
-  useContext(TetReactContext)!;
+export const useEtContext = () =>
+  useContext(EtReactContext)!;
 
 
-export const TetContextProvider = ({ children }: TetContextProviderProps) => {
+export const EtContextProvider = ({ children }: EtContextProviderProps) => {
   const [
     baseFrequency = DEFAUL_BASE_FREQUENCY,
     setBaseFrequency,
@@ -142,13 +142,13 @@ export const TetContextProvider = ({ children }: TetContextProviderProps) => {
   });
 
   return (
-    <TetReactContext.Provider value={contextProps}>
+    <EtReactContext.Provider value={contextProps}>
       {children}
-    </TetReactContext.Provider>
+    </EtReactContext.Provider>
   );
 };
 
 
-interface TetContextProviderProps {
+interface EtContextProviderProps {
   children: ReactNode;
 }

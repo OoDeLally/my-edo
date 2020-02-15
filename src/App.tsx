@@ -4,23 +4,23 @@ import { Keyboard } from './Keyboard';
 import { KeyboardSettingsContextProvider } from './KeyboardSettingsContext';
 import { KeyboardSettingsPanel } from './KeyboardSettingsPanel';
 import { ResetParamsButton } from './ResetParamsButton';
-import { TetContextProvider, useTetContext } from './TetContext';
-import { TetSystemSettingsPanel } from './TetSystemSettingsPanel';
+import { EtContextProvider, useEtContext } from './EtContext';
+import { EtSystemSettingsPanel } from './EtSystemSettingsPanel';
 
 import './App.scss';
 
 
 
 const KeyboardContainer = () => {
-  const { degreeCountPerOctave } = useTetContext();
+  const { degreeCountPerOctave } = useEtContext();
   return (
     <>
       <div className="keyboard-container">
         <h1>
-          My {degreeCountPerOctave}-TET system
+          My {degreeCountPerOctave}-ET system
           <ResetParamsButton />
         </h1>
-        <TetSystemSettingsPanel />
+        <EtSystemSettingsPanel />
         <KeyboardSettingsPanel />
         {
           degreeCountPerOctave > 0 && (
@@ -29,7 +29,7 @@ const KeyboardContainer = () => {
         }
         {
           degreeCountPerOctave === 0 && (
-            <p>A {degreeCountPerOctave}-TET system is a bit boring, isn&apos;t it?</p>
+            <p>A {degreeCountPerOctave}-ET system is a bit boring, isn&apos;t it?</p>
           )
         }
       </div>
@@ -42,11 +42,11 @@ const KeyboardContainer = () => {
 export default () => {
   return (
     <div className="app">
-      <TetContextProvider>
+      <EtContextProvider>
         <KeyboardSettingsContextProvider>
           <KeyboardContainer/>
         </KeyboardSettingsContextProvider>
-      </TetContextProvider>
+      </EtContextProvider>
     </div>
   );
 };

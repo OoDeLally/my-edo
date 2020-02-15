@@ -1,3 +1,3 @@
-## Make your own TET system!
+## Make your own Equal Temperament system!
 
-https://my-tet-system.herokuapp.com/
+https://my-et-system.herokuapp.com/
